@@ -1,0 +1,13 @@
+{
+  "name": "Store Console — Inventory & POS",
+  "short_name": "Store Console",
+  "description": "Store management and point-of-sale system with barcode scanning.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#635bff",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
