@@ -1,12 +1,12 @@
 import {
+    createUserWithEmailAndPassword,
     getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
     signOut,
     type User,
 } from 'firebase/auth';
-import { getApps, getApp, initializeApp } from 'firebase/app';
+import {getApp, getApps, initializeApp} from 'firebase/app';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -26,7 +26,7 @@ export function getFirebaseAuth() {
     return getAuth(getFirebaseApp());
 }
 
-export type { User };
+export type {User};
 
 export function subscribeToAuthChanges(callback: (user: User | null) => void) {
     return onAuthStateChanged(getFirebaseAuth(), callback);

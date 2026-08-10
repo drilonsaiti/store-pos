@@ -8,13 +8,13 @@ interface AuthState {
     loading: boolean;
 }
 
-const AuthContext = React.createContext<AuthState>({ user: null, loading: true });
+const AuthContext = React.createContext<AuthState>({user: null, loading: true});
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = React.useState<AuthState>({ user: null, loading: true });
+export function AuthProvider({children}: { children: React.ReactNode }) {
+    const [state, setState] = React.useState<AuthState>({user: null, loading: true});
 
     React.useEffect(() => {
-        const unsubscribe = subscribeToAuthChanges((user) => setState({ user, loading: false }));
+        const unsubscribe = subscribeToAuthChanges((user) => setState({user, loading: false}));
         return unsubscribe;
     }, []);
 

@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
-import type { Product, ProductInput } from '@/types/product';
-import type { Sale } from '@/types/sale';
+import type {Product, ProductInput} from '@/types/product';
+import type {Sale} from '@/types/sale';
 
 export function downloadCsv(filename: string, csv: string) {
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -64,30 +64,30 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
         const quantity = Number(raw.quantity);
 
         if (!name) {
-            errors.push({ row: rowNumber, message: 'Missing product name' });
+            errors.push({row: rowNumber, message: 'Missing product name'});
             return;
         }
         if (!barCode) {
-            errors.push({ row: rowNumber, message: 'Missing barcode' });
+            errors.push({row: rowNumber, message: 'Missing barcode'});
             return;
         }
         if (!Number.isFinite(price) || price < 0) {
-            errors.push({ row: rowNumber, message: `Invalid price "${raw.price}"` });
+            errors.push({row: rowNumber, message: `Invalid price "${raw.price}"`});
             return;
         }
         if (!Number.isFinite(purchasePrice) || purchasePrice < 0) {
-            errors.push({ row: rowNumber, message: `Invalid purchase price` });
+            errors.push({row: rowNumber, message: `Invalid purchase price`});
             return;
         }
         if (!Number.isFinite(quantity) || quantity < 0) {
-            errors.push({ row: rowNumber, message: `Invalid quantity "${raw.quantity}"` });
+            errors.push({row: rowNumber, message: `Invalid quantity "${raw.quantity}"`});
             return;
         }
 
-        rows.push({ row: rowNumber, data: { name, barCode, price, purchasePrice, quantity } });
+        rows.push({row: rowNumber, data: {name, barCode, price, purchasePrice, quantity}});
     });
 
-    return { rows, errors };
+    return {rows, errors};
 }
 
 /** Flattened one-row-per-line-item export — useful for accounting/reporting. */
@@ -105,5 +105,5 @@ export function salesToCsv(sales: Sale[]): string {
             String(sale.totalPrice),
         ])
     );
-    return Papa.unparse({ fields, data });
+    return Papa.unparse({fields, data});
 }

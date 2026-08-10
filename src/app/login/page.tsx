@@ -1,20 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ScanBarcode, LoaderCircle } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/components/auth/auth-provider';
-import { signIn, signUp } from '@/lib/firebase/auth/auth';
-import { toast } from 'sonner';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {LoaderCircle, ScanBarcode} from 'lucide-react';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Button} from '@/components/ui/button';
+import {useAuth} from '@/components/auth/auth-provider';
+import {signIn, signUp} from '@/lib/firebase/auth/auth';
+import {toast} from 'sonner';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { user, loading: authLoading } = useAuth();
+    const {user, loading: authLoading} = useAuth();
     const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -54,8 +53,9 @@ export default function LoginPage() {
         <div className="flex min-h-dvh items-center justify-center bg-secondary/40 p-4">
             <Card className="w-full max-w-sm">
                 <CardHeader className="items-center text-center">
-                    <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                        <ScanBarcode className="h-5 w-5" />
+                    <div
+                        className="mb-2 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                        <ScanBarcode className="h-5 w-5"/>
                     </div>
                     <CardTitle className="text-base text-foreground">
                         {mode === 'sign-in' ? 'Sign in to Store Console' : 'Create your account'}
@@ -87,7 +87,7 @@ export default function LoginPage() {
                             />
                         </div>
                         <Button type="submit" size="lg" disabled={submitting}>
-                            {submitting && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                            {submitting && <LoaderCircle className="h-4 w-4 animate-spin"/>}
                             {mode === 'sign-in' ? 'Sign in' : 'Create account'}
                         </Button>
                     </form>

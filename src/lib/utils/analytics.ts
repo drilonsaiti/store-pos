@@ -1,4 +1,4 @@
-import type { Sale } from '@/types/sale';
+import type {Sale} from '@/types/sale';
 
 export interface DailyRevenuePoint {
     /** Short label for the chart axis, e.g. "09 Aug" */
@@ -29,7 +29,7 @@ export function getDailyRevenue(sales: Sale[], days = 14): DailyRevenuePoint[] {
     return Array.from(buckets.entries()).map(([date, revenue]) => ({
         date,
         revenue: Math.round(revenue * 100) / 100,
-        label: new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+        label: new Date(date).toLocaleDateString('en-GB', {day: '2-digit', month: 'short'}),
     }));
 }
 
@@ -47,7 +47,7 @@ export function getTopProducts(sales: Sale[], limit = 5): TopProductPoint[] {
         }
     }
     return Array.from(totals.entries())
-        .map(([name, quantity]) => ({ name, quantity }))
+        .map(([name, quantity]) => ({name, quantity}))
         .sort((a, b) => b.quantity - a.quantity)
         .slice(0, limit);
 }

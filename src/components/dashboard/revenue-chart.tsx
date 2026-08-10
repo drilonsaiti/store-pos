@@ -1,11 +1,11 @@
 'use client';
 
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { DailyRevenuePoint } from '@/lib/utils/analytics';
-import { formatCurrency } from '@/lib/utils/currency';
+import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import type {DailyRevenuePoint} from '@/lib/utils/analytics';
+import {formatCurrency} from '@/lib/utils/currency';
 
-function ChartTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: DailyRevenuePoint }> }) {
+function ChartTooltip({active, payload}: { active?: boolean; payload?: Array<{ payload: DailyRevenuePoint }> }) {
     if (!active || !payload?.length) return null;
     const point = payload[0]?.payload;
     if (!point) return null;
@@ -17,7 +17,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Array<{
     );
 }
 
-export function RevenueChart({ data }: { data: DailyRevenuePoint[] }) {
+export function RevenueChart({data}: { data: DailyRevenuePoint[] }) {
     return (
         <Card>
             <CardHeader>
@@ -25,23 +25,23 @@ export function RevenueChart({ data }: { data: DailyRevenuePoint[] }) {
             </CardHeader>
             <CardContent className="h-64 pt-0">
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <BarChart data={data} margin={{top: 4, right: 4, left: -20, bottom: 0}}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false}/>
                         <XAxis
                             dataKey="label"
-                            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                            axisLine={{ stroke: 'hsl(var(--border))' }}
+                            tick={{fontSize: 11, fill: 'hsl(var(--muted-foreground))'}}
+                            axisLine={{stroke: 'hsl(var(--border))'}}
                             tickLine={false}
                             interval="preserveStartEnd"
                         />
                         <YAxis
-                            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                            tick={{fontSize: 11, fill: 'hsl(var(--muted-foreground))'}}
                             axisLine={false}
                             tickLine={false}
                             width={44}
                         />
-                        <Tooltip content={<ChartTooltip />} cursor={{ fill: 'hsl(var(--secondary))' }} />
-                        <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                        <Tooltip content={<ChartTooltip/>} cursor={{fill: 'hsl(var(--secondary))'}}/>
+                        <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={28}/>
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>

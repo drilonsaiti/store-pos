@@ -19,14 +19,16 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
+    "@tanstack/query-sync-storage-persister": "^5.101.4",
     "@tanstack/react-query": "^5.56.2",
+    "@tanstack/react-query-persist-client": "^5.101.4",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "firebase": "^10.13.2",
+    "firebase": "^12.17.1",
     "lucide-react": "^0.445.0",
-    "next": "14.2.35",
+    "next": "^16.3.0",
     "next-themes": "^0.3.0",
     "papaparse": "^5.5.4",
     "react": "^18.3.1",
@@ -39,17 +41,20 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20.14.15",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.35",
+    "eslint-config-next": "^16.3.0",
+    "jsdom": "^30.0.1",
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.5.4",
-    "vitest": "^2.0.5"
+    "vitest": "^4.1.10"
   }
 }
