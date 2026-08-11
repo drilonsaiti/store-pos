@@ -48,7 +48,7 @@ Store Console is a complete rewrite of a legacy Create React App / Redux POS sys
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js 14 (App Router) + TypeScript (strict) |
+| Framework | Next.js 16 (App Router) + TypeScript (strict) |
 | Styling | Tailwind CSS + local shadcn-style primitives |
 | Server state | TanStack Query, persisted to `localStorage` |
 | Client state | Zustand (cart), React Context (auth) |
