@@ -1,11 +1,26 @@
+export type SaleUnit = 'piece' | 'weight';
+export type WeightUnit = 'kg' | 'g';
+
+export interface PackageOption {
+    piecesPerPackage: number;
+    packagePrice: number;
+}
+
 export interface Product {
     id: string;
     name: string;
     /** Always a string. Never coerce to number — barcodes can carry leading zeroes. */
     barCode: string;
+    /** Price per piece, or price per weightUnit when saleUnit is 'weight'. */
     price: number;
     purchasePrice: number;
+    /** Stock count (pieces) or stock amount (in weightUnit) depending on saleUnit. */
     quantity: number;
+    saleUnit: SaleUnit;
+    /** Always populated (defaults to 'kg'), even for piece-sold products — harmless when unused. */
+    weightUnit?: WeightUnit;
+    /** Only meaningful when saleUnit is 'piece'. Lets a product be sold both individually and as a full package at a different price. */
+    packageOption?: PackageOption | null;
     createdAt?: string;
     updatedAt?: string;
 }

@@ -4,7 +4,7 @@ import {useEffect, useRef} from 'react';
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {useCartStore} from '@/stores/cart-store';
-import {formatCurrency} from '@/lib/utils/currency';
+import {useFormatCurrency} from '@/hooks/use-currency';
 
 interface Props {
     open: boolean;
@@ -18,6 +18,7 @@ export function CheckoutDialog({open, onOpenChange, onConfirm, isSubmitting}: Pr
     const total = useCartStore((s) => s.total());
     const totalQuantity = useCartStore((s) => s.totalQuantity());
     const confirmButtonRef = useRef<HTMLButtonElement>(null);
+    const fmt = useFormatCurrency();
 
     useEffect(() => {
         if (open) confirmButtonRef.current?.focus();
@@ -31,12 +32,15 @@ export function CheckoutDialog({open, onOpenChange, onConfirm, isSubmitting}: Pr
                 </DialogHeader>
                 <div className="max-h-64 divide-y overflow-y-auto text-sm">
                     {items.map((item) => (
-                        <div key={item.productId} className="flex items-center justify-between py-2">
+                        <div key={item.lineId} className="flex items-center justify-between py-2">
               <span className="truncate pr-2">
-                {item.name} <span className="text-muted-foreground">× {item.quantity}</span>
+                {item.name}{' '}
+                  <span className="text-muted-foreground">
+                  × {item.quantity}
+                      {item.unitLabel ? ` ${item.unitLabel}` : ''}
+                </span>
               </span>
-                            <span
-                                className="tabular shrink-0 font-medium">{formatCurrency(item.price * item.quantity)}</span>
+                            <span className="tabular shrink-0 font-medium">{fmt(item.price * item.quantity)}</span>
                         </div>
                     ))}
                 </div>
@@ -47,7 +51,7 @@ export function CheckoutDialog({open, onOpenChange, onConfirm, isSubmitting}: Pr
                     </div>
                     <div className="flex justify-between text-lg font-semibold">
                         <span>Total</span>
-                        <span className="tabular">{formatCurrency(total)}</span>
+                        <span className="tabular">{fmt(total)}</span>
                     </div>
                 </div>
                 <DialogFooter>

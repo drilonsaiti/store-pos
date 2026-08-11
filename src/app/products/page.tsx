@@ -2,7 +2,8 @@
 
 import {useMemo, useState} from 'react';
 import Link from 'next/link';
-import {Download, Package, Plus, Upload} from 'lucide-react';
+import dynamic from 'next/dynamic';
+import {Download, Package, Plus, ScanLine, Upload} from 'lucide-react';
 import {AppShell} from '@/components/layout/app-shell';
 import {ProductSearch} from '@/components/products/product-search';
 import {ProductTable} from '@/components/products/product-table';
@@ -15,43 +16,68 @@ import {Button} from '@/components/ui/button';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import {useDeleteProduct, useProducts} from '@/hooks/use-products';
+import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
+import {useDebouncedValue} from '@/hooks/use-debounced-value';
+import {useInfiniteList} from '@/hooks/use-infinite-list';
 import {getStockStatus, type Product, type StockStatus} from '@/types/product';
 import {normalizeBarcode} from '@/lib/utils/barcode';
+import {matchesSearchQuery} from '@/lib/utils/search';
 import {downloadCsv, productsToCsv} from '@/lib/utils/csv';
-import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
 
 type Filter = 'all' | StockStatus;
+
+// Camera scanner is code-split — only fetched if the "Scan" button is used.
+const BarcodeScanner = dynamic(
+    () => import('@/components/scanner/barcode-scanner').then((m) => m.BarcodeScanner),
+    {ssr: false}
+);
 
 export default function ProductsPage() {
     const {data: products, isLoading, isError} = useProducts();
     const deleteProduct = useDeleteProduct();
-    const [query, setQuery] = useState('');
+    const {threshold} = useLowStockThreshold();
+    const [queryInput, setQueryInput] = useState('');
+    const query = useDebouncedValue(queryInput, 200);
     const [filter, setFilter] = useState<Filter>('all');
     const [pendingDelete, setPendingDelete] = useState<Product | null>(null);
     const [importOpen, setImportOpen] = useState(false);
-    const {threshold} = useLowStockThreshold();
+    const [scannerOpen, setScannerOpen] = useState(false);
 
     const filtered = useMemo(() => {
         if (!products) return [];
-        const q = normalizeBarcode(query).toLowerCase();
+        const barcodeQuery = normalizeBarcode(query).toLowerCase();
         return products
             .filter((p) => (filter === 'all' ? true : getStockStatus(p.quantity, threshold) === filter))
-            .filter((p) => (q ? p.name.toLowerCase().includes(q) || normalizeBarcode(p.barCode).toLowerCase().includes(q) : true));
+            .filter((p) =>
+                query.trim() === ''
+                    ? true
+                    : matchesSearchQuery(p.name, query) || normalizeBarcode(p.barCode).toLowerCase().includes(barcodeQuery)
+            );
     }, [products, query, filter, threshold]);
+
+    const {visible, hasMore, loadMore, sentinelRef} = useInfiniteList(filtered, 20);
 
     return (
         <AppShell title="Products">
             <div className="p-4 md:p-6">
                 <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex flex-1 gap-3">
-                        <ProductSearch value={query} onChange={setQuery}/>
+                    <div className="flex flex-1 gap-2">
+                        <ProductSearch value={queryInput} onChange={setQueryInput}/>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-11 w-11 shrink-0"
+                            aria-label="Search by scanning a barcode"
+                            onClick={() => setScannerOpen(true)}
+                        >
+                            <ScanLine className="h-4 w-4"/>
+                        </Button>
                     </div>
                     <div className="flex gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="lg" className="sm:size-default">
-                                    <Upload className="h-4 w-4"/>
-
+                                    <Download className="h-4 w-4"/>
                                     <span className="hidden sm:inline">Export</span>
                                 </Button>
                             </DropdownMenuTrigger>
@@ -66,7 +92,7 @@ export default function ProductsPage() {
                         </DropdownMenu>
                         <Button variant="outline" size="lg" className="sm:size-default"
                                 onClick={() => setImportOpen(true)}>
-                            <Download className="h-4 w-4"/>
+                            <Upload className="h-4 w-4"/>
                             <span className="hidden sm:inline">Import</span>
                         </Button>
                         <Button asChild size="lg" className="sm:size-default">
@@ -120,10 +146,19 @@ export default function ProductsPage() {
                     <EmptyState icon={Package} title="No matches" description="Try a different search term or filter."/>
                 )}
 
-                {filtered.length > 0 && (
+                {visible.length > 0 && (
                     <>
-                        <ProductTable products={filtered} onDelete={setPendingDelete}/>
-                        <ProductCardList products={filtered} onDelete={setPendingDelete}/>
+                        <ProductTable products={visible} onDelete={setPendingDelete}/>
+                        <ProductCardList products={visible} onDelete={setPendingDelete}/>
+
+                        <div ref={sentinelRef} className="h-1"/>
+                        {hasMore && (
+                            <div className="mt-4 flex justify-center">
+                                <Button variant="outline" onClick={loadMore}>
+                                    Load more ({filtered.length - visible.length} remaining)
+                                </Button>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
@@ -137,6 +172,18 @@ export default function ProductsPage() {
                 onConfirm={() => pendingDelete && deleteProduct.mutate(pendingDelete.id)}
             />
             <ImportProductsDialog open={importOpen} onOpenChange={setImportOpen}/>
+            {scannerOpen && (
+                <BarcodeScanner
+                    open={scannerOpen}
+                    onOpenChange={setScannerOpen}
+                    onDetect={(code) => {
+                        setQueryInput(code);
+                        setScannerOpen(false);
+                    }}
+                    feedback={null}
+                    showSummary={false}
+                />
+            )}
         </AppShell>
     );
 }

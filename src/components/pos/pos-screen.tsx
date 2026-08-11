@@ -10,22 +10,22 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Cart} from './cart';
 import {CheckoutDialog} from './checkout-dialog';
 import {BarcodeNotFound} from './barcode-not-found';
+import {QuickAddProductDialog} from './quick-add-product-dialog';
+import {AddSpecialItemDialog} from './add-special-item-dialog';
 import type {ScanFeedback} from '@/components/scanner/barcode-scanner';
 import {useBarcodeIndex, useProducts} from '@/hooks/use-products';
 import {useCreateSale} from '@/hooks/use-sales';
 import {useOnlineStatus} from '@/hooks/use-online-status';
+import {useFormatCurrency} from '@/hooks/use-currency';
 import {enqueueSale} from '@/lib/offline/sale-queue';
 import {useCartStore} from '@/stores/cart-store';
 import {useHardwareBarcodeScanner} from '@/hooks/use-hardware-barcode-scanner';
 import {findProductByBarcode, findProductByNameOrBarcode, normalizeBarcode} from '@/lib/utils/barcode';
+import {matchesSearchQuery} from '@/lib/utils/search';
 import {playScanError, playScanSuccess} from '@/lib/utils/feedback';
-import {formatCurrency} from '@/lib/utils/currency';
 import type {Product} from '@/types/product';
 import {toast} from 'sonner';
 
-// Camera scanner is code-split and only fetched once the user actually taps
-// "Scan barcode" — most transactions may never need it (manual search /
-// hardware scanner also add to cart), so it shouldn't cost every POS load.
 const BarcodeScanner = dynamic(
     () => import('@/components/scanner/barcode-scanner').then((m) => m.BarcodeScanner),
     {
@@ -41,9 +41,10 @@ const BarcodeScanner = dynamic(
 export function PosScreen() {
     const {data: products = []} = useProducts();
     const barcodeIndex = useBarcodeIndex();
-    const {items, addProduct, clear, total, totalQuantity} = useCartStore();
+    const {items, addProduct, addLine, clear, total, totalQuantity} = useCartStore();
     const createSale = useCreateSale();
     const isOnline = useOnlineStatus();
+    const fmt = useFormatCurrency();
 
     const [inputValue, setInputValue] = useState('');
     const [scannerOpen, setScannerOpen] = useState(false);
@@ -54,15 +55,18 @@ export function PosScreen() {
     }, []);
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [notFoundCode, setNotFoundCode] = useState<string | null>(null);
+    const [quickAddOpen, setQuickAddOpen] = useState(false);
+    const [specialProduct, setSpecialProduct] = useState<Product | null>(null);
     const [scanFeedback, setScanFeedback] = useState<ScanFeedback | null>(null);
+    const [lastScannedId, setLastScannedId] = useState<string | null>(null);
     const searchRef = useRef<HTMLInputElement>(null);
     const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const suggestions = useMemo(() => {
-        const q = inputValue.trim().toLowerCase();
+        const q = inputValue.trim();
         if (!q) return [];
         return products
-            .filter((p) => p.name.toLowerCase().includes(q) || normalizeBarcode(p.barCode).includes(q))
+            .filter((p) => matchesSearchQuery(p.name, q) || normalizeBarcode(p.barCode).includes(normalizeBarcode(q)))
             .slice(0, 6);
     }, [inputValue, products]);
 
@@ -76,17 +80,32 @@ export function PosScreen() {
         [addProduct]
     );
 
+    /** Central "a product was picked" entry point. Plain pieces add instantly;
+     * weight- or package-configured products open a picker first. */
+    const handleProductSelected = useCallback(
+        (product: Product) => {
+            if (product.saleUnit === 'weight' || product.packageOption) {
+                setSpecialProduct(product);
+                setInputValue('');
+                setNotFoundCode(null);
+                return;
+            }
+            addToCart(product);
+        },
+        [addToCart]
+    );
+
     const handleBarcode = useCallback(
         (barcode: string) => {
             const product = findProductByBarcode(barcodeIndex, barcode);
             if (product) {
-                addToCart(product);
+                handleProductSelected(product);
             } else {
                 playScanError();
                 setNotFoundCode(normalizeBarcode(barcode));
             }
         },
-        [barcodeIndex, addToCart]
+        [barcodeIndex, handleProductSelected]
     );
 
     const handleManualSubmit = useCallback(() => {
@@ -94,12 +113,12 @@ export function PosScreen() {
         if (!value) return;
         const product = findProductByBarcode(barcodeIndex, value) ?? findProductByNameOrBarcode(products, value);
         if (product) {
-            addToCart(product);
+            handleProductSelected(product);
         } else {
             playScanError();
             setNotFoundCode(value);
         }
-    }, [inputValue, barcodeIndex, products, addToCart]);
+    }, [inputValue, barcodeIndex, products, handleProductSelected]);
 
     const showScanFeedback = useCallback((fb: ScanFeedback) => {
         if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
@@ -111,12 +130,23 @@ export function PosScreen() {
         (barcode: string) => {
             const product = findProductByBarcode(barcodeIndex, barcode);
             if (product) {
+                if (product.saleUnit === 'weight' || product.packageOption) {
+                    // Weight/package products need a decision dialog — close the
+                    // camera and hand off to the main-screen picker rather than
+                    // stacking a second dialog on top of the scanner.
+                    setScannerOpen(false);
+                    setSpecialProduct(product);
+                    return;
+                }
                 addProduct(product);
                 playScanSuccess();
+                setLastScannedId(product.id);
                 showScanFeedback({type: 'success', message: `${product.name} added`});
             } else {
                 playScanError();
-                showScanFeedback({type: 'error', message: `Not found: ${normalizeBarcode(barcode)}`});
+                const code = normalizeBarcode(barcode);
+                setNotFoundCode(code);
+                showScanFeedback({type: 'error', message: `Not found: ${code}`});
             }
         },
         [barcodeIndex, addProduct, showScanFeedback]
@@ -132,7 +162,10 @@ export function PosScreen() {
         if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
     }, []);
 
-    useHardwareBarcodeScanner({onScan: handleBarcode, enabled: !scannerOpen && !checkoutOpen});
+    useHardwareBarcodeScanner({
+        onScan: handleBarcode,
+        enabled: !scannerOpen && !checkoutOpen && !quickAddOpen && !specialProduct,
+    });
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -173,13 +206,21 @@ export function PosScreen() {
                 purchasePrice: item.purchasePrice,
                 quantity: item.quantity,
                 date: new Date().toISOString(),
+                mode: item.mode,
+                unitLabel: item.unitLabel,
             })),
         };
 
         setIsCheckingOut(true);
         try {
             if (isOnline) {
-                await createSale.mutateAsync(sale);
+                const created = await createSale.mutateAsync(sale);
+                toast.success('Sale completed', {
+                    action: {
+                        label: 'Print receipt',
+                        onClick: () => window.open(`/print/receipt/${created.id}`, '_blank'),
+                    },
+                });
             } else {
                 throw new Error('offline');
             }
@@ -191,12 +232,13 @@ export function PosScreen() {
         }
 
         clear();
+        setLastScannedId(null);
         setCheckoutOpen(false);
         searchRef.current?.focus();
     };
 
     return (
-        <div className="grid gap-4 p-4 pb-28 md:grid-cols-[1fr_360px] md:p-6 md:pb-6">
+        <div className="grid gap-4 p-4 pb-28 lg:grid-cols-[1fr_380px] lg:p-6 lg:pb-6">
             <div className="flex flex-col gap-4">
                 <Card className="p-3 sm:p-4">
                     <div className="flex flex-col gap-2 sm:flex-row">
@@ -229,14 +271,13 @@ export function PosScreen() {
                                             type="button"
                                             role="option"
                                             aria-selected={false}
-                                            onClick={() => addToCart(p)}
+                                            onClick={() => handleProductSelected(p)}
                                             className="flex w-full min-h-11 items-center justify-between px-3 py-2 text-left text-sm hover:bg-secondary"
                                         >
                       <span>
                         {p.name} <span className="tabular text-muted-foreground">· {p.barCode}</span>
                       </span>
-                                            <span
-                                                className="tabular text-muted-foreground">{formatCurrency(p.price)}</span>
+                                            <span className="tabular text-muted-foreground">{fmt(p.price)}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -252,6 +293,7 @@ export function PosScreen() {
                 {notFoundCode && (
                     <BarcodeNotFound
                         barcode={notFoundCode}
+                        onCreateProduct={() => setQuickAddOpen(true)}
                         onSearchManually={() => {
                             setNotFoundCode(null);
                             searchRef.current?.focus();
@@ -277,12 +319,12 @@ export function PosScreen() {
             </div>
 
             <div
-                className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] md:static md:bottom-auto md:h-fit md:rounded-lg md:border md:shadow-sm">
+                className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:static lg:bottom-auto lg:h-fit lg:rounded-lg lg:border lg:shadow-sm">
                 <div className="mb-3 flex items-center justify-between" aria-live="polite" aria-atomic="true">
                     <span className="text-muted-foreground">Total</span>
-                    <span className="tabular text-2xl font-semibold">{formatCurrency(total())}</span>
+                    <span className="tabular text-2xl font-semibold">{fmt(total())}</span>
                 </div>
-                <Button size="lg" className="h-12 w-full " disabled={items.length === 0}
+                <Button size="lg" className="h-12 w-full" disabled={items.length === 0}
                         onClick={() => setCheckoutOpen(true)}>
                     Complete sale
                 </Button>
@@ -296,6 +338,7 @@ export function PosScreen() {
                     feedback={scanFeedback}
                     cartCount={totalQuantity()}
                     cartTotal={total()}
+                    lastProductId={lastScannedId}
                 />
             )}
 
@@ -304,6 +347,26 @@ export function PosScreen() {
                 onOpenChange={setCheckoutOpen}
                 onConfirm={handleConfirmSale}
                 isSubmitting={isCheckingOut}
+            />
+
+            <QuickAddProductDialog
+                open={quickAddOpen}
+                onOpenChange={setQuickAddOpen}
+                barcode={notFoundCode ?? ''}
+                onCreated={(product) => {
+                    addToCart(product);
+                    setQuickAddOpen(false);
+                }}
+            />
+
+            <AddSpecialItemDialog
+                product={specialProduct}
+                onOpenChange={(open) => !open && setSpecialProduct(null)}
+                onConfirm={({mode, quantity, unitPrice, unitLabel}) => {
+                    if (!specialProduct) return;
+                    addLine({product: specialProduct, mode, quantity, unitPrice, unitLabel});
+                    playScanSuccess();
+                }}
             />
         </div>
     );

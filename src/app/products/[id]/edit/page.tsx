@@ -5,7 +5,7 @@ import {AppShell} from '@/components/layout/app-shell';
 import {ProductForm} from '@/components/products/product-form';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useProduct, useUpdateProduct} from '@/hooks/use-products';
-import type {ProductFormValues} from '@/lib/validation/product-schema';
+import type {ProductInput} from '@/types/product';
 
 export default function EditProductPage() {
     const {id} = useParams<{ id: string }>();
@@ -13,7 +13,7 @@ export default function EditProductPage() {
     const {data: product, isLoading} = useProduct(id);
     const updateProduct = useUpdateProduct();
 
-    const handleSubmit = async (values: ProductFormValues) => {
+    const handleSubmit = async (values: ProductInput) => {
         await updateProduct.mutateAsync({id, product: values});
         router.push(`/products/${id}`);
     };

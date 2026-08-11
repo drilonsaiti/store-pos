@@ -111,3 +111,10 @@
         scroll-behavior: auto !important;
     }
 }
+
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 4mm;
+    }
+}

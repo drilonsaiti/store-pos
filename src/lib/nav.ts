@@ -23,3 +23,14 @@ export const MOBILE_NAV_ITEMS: NavItem[] = [
     {href: '/sales', label: 'Sales', icon: Receipt},
     {href: '/settings', label: 'More', icon: Settings},
 ];
+
+/**
+ * Exact-segment route matching — plain `pathname.startsWith(href)` wrongly
+ * marks "/sale" (POS) as active while on "/sales", since "/sales" starts
+ * with "/sale". A match only counts if the pathname is the href exactly, or
+ * continues with a "/" (a real sub-route), never mid-word.
+ */
+export function isNavItemActive(pathname: string, href: string): boolean {
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(`${href}/`);
+}

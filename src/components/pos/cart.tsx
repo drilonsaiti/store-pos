@@ -21,7 +21,7 @@ export function Cart() {
     return (
         <div className="divide-y">
             {items.map((item) => (
-                <CartItemRow key={item.productId} item={item}/>
+                <CartItemRow key={item.lineId} item={item}/>
             ))}
         </div>
     );

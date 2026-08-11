@@ -10,7 +10,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {StockBadge} from '@/components/products/stock-badge';
 import {ConfirmDialog} from '@/components/ui/confirm-dialog';
 import {useDeleteProduct, useProduct} from '@/hooks/use-products';
-import {formatCurrency} from '@/lib/utils/currency';
+import {useFormatCurrency} from '@/hooks/use-currency';
 import {formatDateTime} from '@/lib/utils/dates';
 import {useState} from 'react';
 
@@ -19,6 +19,7 @@ export default function ProductDetailPage() {
     const router = useRouter();
     const {data: product, isLoading} = useProduct(id);
     const deleteProduct = useDeleteProduct();
+    const fmt = useFormatCurrency();
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     return (
@@ -39,11 +40,11 @@ export default function ProductDetailPage() {
                             <dl className="grid grid-cols-2 gap-4 border-t pt-4 text-sm">
                                 <div>
                                     <dt className="text-muted-foreground">Selling price</dt>
-                                    <dd className="tabular font-medium">{formatCurrency(product.price)}</dd>
+                                    <dd className="tabular font-medium">{fmt(product.price)}</dd>
                                 </div>
                                 <div>
                                     <dt className="text-muted-foreground">Purchase price</dt>
-                                    <dd className="tabular font-medium">{formatCurrency(product.purchasePrice)}</dd>
+                                    <dd className="tabular font-medium">{fmt(product.purchasePrice)}</dd>
                                 </div>
                                 <div>
                                     <dt className="text-muted-foreground">Quantity in stock</dt>

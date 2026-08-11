@@ -7,14 +7,25 @@ import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
+import {Badge} from '@/components/ui/badge';
 import {cn} from '@/lib/utils/cn';
 import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
+import {useCurrency} from '@/hooks/use-currency';
+import {SUPPORTED_CURRENCIES} from '@/lib/utils/currency';
+import {useCameraPermission} from '@/hooks/use-camera-permission';
 
 const THEMES = [
     {value: 'light', label: 'Light'},
     {value: 'dark', label: 'Dark'},
     {value: 'system', label: 'System'},
 ] as const;
+
+const CAMERA_STATUS_LABEL: Record<string, string> = {
+    granted: 'Granted — camera scanning will not ask again on this device',
+    denied: 'Blocked — re-enable camera access for this site in browser settings',
+    prompt: 'Not yet granted — you will be asked the first time you scan',
+    unknown: 'Cannot be checked on this browser — Safari does not support querying it in advance',
+};
 
 export default function SettingsPage() {
     const {theme, setTheme} = useTheme();
@@ -24,6 +35,9 @@ export default function SettingsPage() {
     const {threshold, setThreshold} = useLowStockThreshold();
     const [draft, setDraft] = useState<string>(String(threshold));
     useEffect(() => setDraft(String(threshold)), [threshold]);
+
+    const {currency, setCurrency} = useCurrency();
+    const cameraPermission = useCameraPermission();
 
     return (
         <AppShell title="Settings">
@@ -41,6 +55,24 @@ export default function SettingsPage() {
                                 onClick={() => setTheme(t.value)}
                             >
                                 {t.label}
+                            </Button>
+                        ))}
+                    </CardContent>
+                </Card>
+
+                <Card className="max-w-md">
+                    <CardHeader>
+                        <CardTitle>Currency</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-wrap gap-2 pt-0">
+                        {SUPPORTED_CURRENCIES.map((code) => (
+                            <Button
+                                key={code}
+                                variant="outline"
+                                className={cn(currency === code && 'border-primary text-primary')}
+                                onClick={() => setCurrency(code)}
+                            >
+                                {code}
                             </Button>
                         ))}
                     </CardContent>
@@ -73,6 +105,31 @@ export default function SettingsPage() {
                         <p className="text-xs text-muted-foreground">
                             Products at or below this quantity show as &quot;Low stock&quot; across Products, the POS,
                             and the dashboard.
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card className="max-w-md">
+                    <CardHeader>
+                        <CardTitle>Camera access</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-2 pt-0">
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                variant={cameraPermission === 'granted' ? 'success' : cameraPermission === 'denied' ? 'destructive' : 'secondary'}>
+                                {cameraPermission}
+                            </Badge>
+                            <span
+                                className="text-sm text-muted-foreground">{CAMERA_STATUS_LABEL[cameraPermission]}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Once granted, the browser remembers this for the site automatically — it will not ask again
+                            on the same
+                            device, as long as the store is always opened at the same web address. Opening it from a
+                            different or
+                            changing address (e.g. a LAN IP instead of a fixed domain) is treated as a different site
+                            and will ask
+                            again; this is a browser security rule, not something the app controls.
                         </p>
                     </CardContent>
                 </Card>

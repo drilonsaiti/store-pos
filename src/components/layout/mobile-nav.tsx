@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {MOBILE_NAV_ITEMS} from '@/lib/nav';
+import {isNavItemActive, MOBILE_NAV_ITEMS} from '@/lib/nav';
 import {cn} from '@/lib/utils/cn';
 
 export function MobileNav() {
@@ -14,7 +14,7 @@ export function MobileNav() {
             aria-label="Primary"
         >
             {MOBILE_NAV_ITEMS.map((item) => {
-                const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                const active = isNavItemActive(pathname, item.href);
                 const isPos = item.href === '/sale';
                 const Icon = item.icon;
                 return (

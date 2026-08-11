@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {NAV_ITEMS} from '@/lib/nav';
+import {isNavItemActive, NAV_ITEMS} from '@/lib/nav';
 import {cn} from '@/lib/utils/cn';
 import {ScanBarcode} from 'lucide-react';
 
@@ -19,7 +19,7 @@ export function Sidebar() {
             </div>
             <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Primary">
                 {NAV_ITEMS.map((item) => {
-                    const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                    const active = isNavItemActive(pathname, item.href);
                     const Icon = item.icon;
                     return (
                         <Link

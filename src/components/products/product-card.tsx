@@ -6,15 +6,16 @@ import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {StockBadge} from './stock-badge';
 import type {Product} from '@/types/product';
-import {formatCurrency} from '@/lib/utils/currency';
+import {useFormatCurrency} from '@/hooks/use-currency';
 
 interface Props {
     products: Product[];
     onDelete: (product: Product) => void;
 }
 
-/** Mobile list — cards instead of a wide table, per the mobile-first requirement. */
 export function ProductCardList({products, onDelete}: Props) {
+    const fmt = useFormatCurrency();
+
     return (
         <div className="flex flex-col gap-3 md:hidden">
             {products.map((product) => (
@@ -30,9 +31,9 @@ export function ProductCardList({products, onDelete}: Props) {
                     </div>
                     <div className="mt-3 flex items-end justify-between">
                         <div>
-                            <p className="tabular text-lg font-semibold">{formatCurrency(product.price)}</p>
+                            <p className="tabular text-lg font-semibold">{fmt(product.price)}</p>
                             <p className="tabular text-xs text-muted-foreground">
-                                Stock: {product.quantity} · Cost {formatCurrency(product.purchasePrice)}
+                                Stock: {product.quantity} · Cost {fmt(product.purchasePrice)}
                             </p>
                         </div>
                         <div className="flex gap-1">

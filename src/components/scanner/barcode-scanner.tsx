@@ -1,11 +1,12 @@
 'use client';
 
 import {useEffect} from 'react';
-import {CameraOff, Check, PackageX, RotateCcw, ShieldAlert, X, Zap, ZapOff} from 'lucide-react';
+import {CameraOff, Check, Minus, PackageX, Plus, RotateCcw, ShieldAlert, X, Zap, ZapOff} from 'lucide-react';
 import {Dialog, DialogContent, DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {useCameraBarcodeScanner} from '@/hooks/use-camera-barcode-scanner';
-import {formatCurrency} from '@/lib/utils/currency';
+import {useCartStore} from '@/stores/cart-store';
+import {useFormatCurrency} from '@/hooks/use-currency';
 
 export interface ScanFeedback {
     type: 'success' | 'error';
@@ -17,26 +18,40 @@ interface Props {
     onOpenChange: (open: boolean) => void;
     onDetect: (barcode: string) => void;
     feedback: ScanFeedback | null;
-    cartCount: number;
-    cartTotal: number;
+    cartCount?: number;
+    cartTotal?: number;
+    lastProductId?: string | null;
+    showSummary?: boolean;
 }
 
 function retryCamera(onOpenChange: (open: boolean) => void) {
     onOpenChange(false);
-    // Re-open on the next tick so the getUserMedia effect re-runs from a clean state.
     setTimeout(() => onOpenChange(true), 0);
 }
 
-/**
- * Full-screen dedicated scanner UI. Stays open across multiple scans so a
- * cashier can ring up an entire basket without touching the screen between
- * items — it only closes on Escape, the X button, or "Done".
- */
-export function BarcodeScanner({open, onOpenChange, onDetect, feedback, cartCount, cartTotal}: Props) {
+export function BarcodeScanner({
+                                   open,
+                                   onOpenChange,
+                                   onDetect,
+                                   feedback,
+                                   cartCount = 0,
+                                   cartTotal = 0,
+                                   lastProductId,
+                                   showSummary = true,
+                               }: Props) {
     const {videoRef, status, hasTorch, torchOn, toggleTorch} = useCameraBarcodeScanner({
         enabled: open,
         onDetect: (code) => onDetect(code),
     });
+
+    const items = useCartStore((s) => s.items);
+    const incrementItem = useCartStore((s) => s.incrementItem);
+    const decrementItem = useCartStore((s) => s.decrementItem);
+    const fmt = useFormatCurrency();
+    // Only the plain "piece" line is relevant here — weight/package products
+    // are routed to AddSpecialItemDialog instead of ever reaching this panel.
+    const lastItem =
+        showSummary && lastProductId ? items.find((i) => i.productId === lastProductId && i.mode === 'piece') : undefined;
 
     useEffect(() => {
         if (!open) return;
@@ -72,20 +87,20 @@ export function BarcodeScanner({open, onOpenChange, onDetect, feedback, cartCoun
                         </Button>
                     </div>
 
-                    <div className="relative flex-1">
+                    <div
+                        className={`relative shrink-0 ${showSummary ? 'h-[42dvh] min-h-[260px]' : 'h-[60dvh] min-h-[320px]'}`}>
                         <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" playsInline
                                muted/>
 
                         {status === 'scanning' && (
-                            <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="absolute inset-0 flex items-center justify-center p-6">
                                 <div
-                                    className="relative h-40 w-72 max-w-[80%] overflow-hidden rounded-2xl border-2 border-white/80">
+                                    className="relative aspect-[3/2] w-full max-w-xs overflow-hidden rounded-2xl border-2 border-white/80">
                                     <div className="absolute inset-x-0 top-0 h-0.5 animate-scan-line bg-primary"/>
                                 </div>
                             </div>
                         )}
 
-                        {/* Per-scan toast — appears over the viewfinder, auto-dismisses, camera never stops */}
                         {feedback && (
                             <div
                                 className="pointer-events-none absolute inset-x-0 top-4 flex justify-center px-4"
@@ -136,17 +151,61 @@ export function BarcodeScanner({open, onOpenChange, onDetect, feedback, cartCoun
                         )}
                     </div>
 
-                    {/* Persistent running total — lets the cashier keep scanning without leaving the camera */}
-                    <div
-                        className="safe-bottom flex items-center justify-between gap-3 border-t border-white/10 bg-black/90 p-4">
-                        <div className="text-sm">
-                            <p className="text-white/60">{cartCount} item{cartCount === 1 ? '' : 's'}</p>
-                            <p className="tabular text-lg font-semibold">{formatCurrency(cartTotal)}</p>
+                    <p className="px-4 pt-3 text-center text-xs text-white/60">
+                        Fill the frame with the barcode — hold steady for small or worn codes
+                    </p>
+
+                    {showSummary && (
+                        <div className="flex-1 overflow-y-auto px-4 py-3">
+                            {lastItem ? (
+                                <div className="flex items-center gap-3 rounded-lg bg-white/10 p-3">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-medium">{lastItem.name}</p>
+                                        <p className="tabular text-xs text-white/60">{fmt(lastItem.price)} each</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="secondary"
+                                            size="icon"
+                                            className="h-9 w-9"
+                                            aria-label={`Decrease quantity of ${lastItem.name}`}
+                                            onClick={() => decrementItem(lastItem.lineId)}
+                                        >
+                                            <Minus className="h-4 w-4"/>
+                                        </Button>
+                                        <span
+                                            className="tabular w-6 text-center text-sm font-semibold">{lastItem.quantity}</span>
+                                        <Button
+                                            variant="secondary"
+                                            size="icon"
+                                            className="h-9 w-9"
+                                            aria-label={`Increase quantity of ${lastItem.name}`}
+                                            onClick={() => incrementItem(lastItem.lineId)}
+                                        >
+                                            <Plus className="h-4 w-4"/>
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-center text-sm text-white/50">Scanned items will appear here</p>
+                            )}
                         </div>
-                        <Button size="lg" onClick={() => onOpenChange(false)} disabled={cartCount === 0}>
-                            Done scanning
-                        </Button>
-                    </div>
+                    )}
+
+                    {showSummary && (
+                        <div
+                            className="safe-bottom flex items-center justify-between gap-3 border-t border-white/10 bg-black/90 p-4">
+                            <div className="text-sm">
+                                <p className="text-white/60">
+                                    {cartCount} item{cartCount === 1 ? '' : 's'}
+                                </p>
+                                <p className="tabular text-lg font-semibold">{fmt(cartTotal)}</p>
+                            </div>
+                            <Button size="lg" onClick={() => onOpenChange(false)} disabled={cartCount === 0}>
+                                Done scanning
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

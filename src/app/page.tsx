@@ -12,14 +12,12 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {StockBadge} from '@/components/products/stock-badge';
 import {useProducts} from '@/hooks/use-products';
 import {useSales} from '@/hooks/use-sales';
-import {formatCurrency} from '@/lib/utils/currency';
-import {formatDateTime, isToday} from '@/lib/utils/dates';
-import {getStockStatus, LOW_STOCK_THRESHOLD} from '@/types/product';
-import {getDailyRevenue, getTopProducts} from '@/lib/utils/analytics';
+import {useFormatCurrency} from '@/hooks/use-currency';
 import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
+import {formatDateTime, isToday} from '@/lib/utils/dates';
+import {getStockStatus} from '@/types/product';
+import {getDailyRevenue, getTopProducts} from '@/lib/utils/analytics';
 
-// Recharts pulls in a sizeable bundle — load it only on the client, only for
-// the dashboard route, instead of shipping it in every page's JS.
 const RevenueChart = dynamic(() => import('@/components/dashboard/revenue-chart').then((m) => m.RevenueChart), {
     ssr: false,
     loading: () => <Skeleton className="h-[22rem] w-full lg:h-72"/>,
@@ -32,6 +30,7 @@ const TopProductsChart = dynamic(
 export default function DashboardPage() {
     const {data: products, isLoading: productsLoading} = useProducts();
     const {data: sales, isLoading: salesLoading} = useSales();
+    const fmt = useFormatCurrency();
     const {threshold} = useLowStockThreshold();
 
     const metrics = useMemo(() => {
@@ -66,10 +65,9 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
                         <KpiCard label="Products" value={String(metrics.totalProducts)} icon={Package}/>
                         <KpiCard label="Inventory units" value={metrics.totalUnits.toLocaleString()} icon={Boxes}/>
-                        <KpiCard label="Inventory value" value={formatCurrency(metrics.inventoryValue)} icon={Wallet}/>
+                        <KpiCard label="Inventory value" value={fmt(metrics.inventoryValue)} icon={Wallet}/>
                         <KpiCard label="Today's sales" value={String(metrics.todaySalesCount)} icon={ShoppingBag}/>
-                        <KpiCard label="Today's revenue" value={formatCurrency(metrics.todayRevenue)}
-                                 icon={TrendingUp}/>
+                        <KpiCard label="Today's revenue" value={fmt(metrics.todayRevenue)} icon={TrendingUp}/>
                         <KpiCard label="Low stock" value={String(metrics.lowStock.length)} icon={AlertTriangle}
                                  tone="warning"/>
                     </div>
@@ -89,8 +87,8 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-2 pt-0">
                             {metrics.lowStock.length === 0 && !isLoading && (
-                                <p className="text-sm text-muted-foreground">Everything is above
-                                    the {LOW_STOCK_THRESHOLD}-unit threshold.</p>
+                                <p className="text-sm text-muted-foreground">Everything is above the {threshold}-unit
+                                    threshold.</p>
                             )}
                             {metrics.lowStock.slice(0, 6).map((product) => (
                                 <Link
@@ -123,7 +121,7 @@ export default function DashboardPage() {
                                     className="flex items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-secondary"
                                 >
                                     <span>{formatDateTime(sale.date)}</span>
-                                    <span className="tabular font-medium">{formatCurrency(sale.totalPrice)}</span>
+                                    <span className="tabular font-medium">{fmt(sale.totalPrice)}</span>
                                 </Link>
                             ))}
                         </CardContent>

@@ -1,3 +1,5 @@
+import type {CartLineMode} from './cart';
+
 export interface SaleLineItem {
     idProduct: string;
     name: string;
@@ -6,6 +8,8 @@ export interface SaleLineItem {
     purchasePrice: number;
     quantity: number;
     date: string;
+    mode?: CartLineMode;
+    unitLabel?: string;
 }
 
 export interface Sale {

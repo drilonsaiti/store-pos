@@ -6,7 +6,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/c
 import {Button} from '@/components/ui/button';
 import {StockBadge} from './stock-badge';
 import type {Product} from '@/types/product';
-import {formatCurrency} from '@/lib/utils/currency';
+import {useFormatCurrency} from '@/hooks/use-currency';
 
 interface Props {
     products: Product[];
@@ -14,6 +14,8 @@ interface Props {
 }
 
 export function ProductTable({products, onDelete}: Props) {
+    const fmt = useFormatCurrency();
+
     return (
         <div className="hidden rounded-lg border md:block">
             <Table>
@@ -37,10 +39,9 @@ export function ProductTable({products, onDelete}: Props) {
                                 </Link>
                             </TableCell>
                             <TableCell className="tabular text-muted-foreground">{product.barCode}</TableCell>
-                            <TableCell className="tabular text-right">{formatCurrency(product.price)}</TableCell>
-                            <TableCell className="tabular text-right text-muted-foreground">
-                                {formatCurrency(product.purchasePrice)}
-                            </TableCell>
+                            <TableCell className="tabular text-right">{fmt(product.price)}</TableCell>
+                            <TableCell
+                                className="tabular text-right text-muted-foreground">{fmt(product.purchasePrice)}</TableCell>
                             <TableCell className="tabular text-right">{product.quantity}</TableCell>
                             <TableCell>
                                 <StockBadge quantity={product.quantity}/>

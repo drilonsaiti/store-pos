@@ -1,17 +1,17 @@
 'use client';
 
-import Link from 'next/link';
 import {PackageSearch} from 'lucide-react';
 import {Card, CardContent} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 
 interface Props {
     barcode: string;
+    onCreateProduct: () => void;
     onSearchManually: () => void;
     onScanAgain: () => void;
 }
 
-export function BarcodeNotFound({barcode, onSearchManually, onScanAgain}: Props) {
+export function BarcodeNotFound({barcode, onCreateProduct, onSearchManually, onScanAgain}: Props) {
     return (
         <Card className="border-warning/40 bg-warning/5">
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
@@ -21,8 +21,8 @@ export function BarcodeNotFound({barcode, onSearchManually, onScanAgain}: Props)
                     <p className="tabular text-sm text-muted-foreground">{barcode}</p>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2 pt-1">
-                    <Button asChild size="sm">
-                        <Link href={`/products/new?barcode=${encodeURIComponent(barcode)}`}>Create product</Link>
+                    <Button size="sm" onClick={onCreateProduct}>
+                        Add product
                     </Button>
                     <Button variant="outline" size="sm" onClick={onSearchManually}>
                         Search manually

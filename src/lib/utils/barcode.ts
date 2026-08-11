@@ -1,4 +1,5 @@
 import type {Product} from '@/types/product';
+import {normalizeSearchText} from './search';
 
 /**
  * Barcode values must NEVER be coerced to number — EAN-13 codes routinely
@@ -31,12 +32,23 @@ export function findProductByBarcode(
     return index.get(normalizeBarcode(barcode));
 }
 
+/**
+ * Fallback for manually-typed submissions (Enter in the POS search box):
+ * exact barcode match first, then an exact — but diacritic/Cyrillic-
+ * normalized — name match. Deliberately exact rather than fuzzy here,
+ * since this path adds whatever it finds straight to the cart; fuzzy
+ * matching lives in the suggestions dropdown (lib/utils/search.ts), where
+ * the cashier picks from a list instead of it being auto-selected.
+ */
 export function findProductByNameOrBarcode(
     products: Product[],
     query: string
 ): Product | undefined {
-    const normalized = normalizeBarcode(query).toLowerCase();
+    const normalizedBarcode = normalizeBarcode(query).toLowerCase();
+    const normalizedName = normalizeSearchText(query);
     return products.find(
-        (p) => normalizeBarcode(p.barCode).toLowerCase() === normalized || p.name.toLowerCase() === normalized
+        (p) =>
+            normalizeBarcode(p.barCode).toLowerCase() === normalizedBarcode ||
+            normalizeSearchText(p.name) === normalizedName
     );
 }

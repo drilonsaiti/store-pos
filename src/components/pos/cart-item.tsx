@@ -1,20 +1,32 @@
 'use client';
 
+import {memo} from 'react';
 import {Minus, Plus, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import type {CartItem as CartItemType} from '@/types/cart';
-import {calculateLineTotal, formatCurrency} from '@/lib/utils/currency';
+import {calculateLineTotal} from '@/lib/utils/currency';
+import {useFormatCurrency} from '@/hooks/use-currency';
 import {useCartStore} from '@/stores/cart-store';
 
-export function CartItemRow({item}: { item: CartItemType }) {
-    const {incrementItem, decrementItem, setQuantity, removeItem} = useCartStore();
+export const CartItemRow = memo(function CartItemRow({item}: { item: CartItemType }) {
+    const incrementItem = useCartStore((s) => s.incrementItem);
+    const decrementItem = useCartStore((s) => s.decrementItem);
+    const setQuantity = useCartStore((s) => s.setQuantity);
+    const removeItem = useCartStore((s) => s.removeItem);
+    const fmt = useFormatCurrency();
+    const isWeight = item.mode === 'weight';
 
     return (
-        <div className="flex items-center gap-3 py-3">
-            <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{item.name}</p>
-                <p className="tabular text-xs text-muted-foreground">{formatCurrency(item.price)} each</p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:flex-nowrap">
+            <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+                <p className="truncate text-sm font-medium">
+                    {item.name}
+                    {item.mode === 'package' && <span className="ml-1.5 text-xs text-muted-foreground">(package)</span>}
+                </p>
+                <p className="tabular text-xs text-muted-foreground">
+                    {fmt(item.price)} {isWeight ? `/ ${item.unitLabel ?? 'kg'}` : item.mode === 'package' ? '/ package' : 'each'}
+                </p>
             </div>
 
             <div className="flex items-center gap-1">
@@ -23,15 +35,16 @@ export function CartItemRow({item}: { item: CartItemType }) {
                     size="icon"
                     className="h-9 w-9"
                     aria-label={`Decrease quantity of ${item.name}`}
-                    onClick={() => decrementItem(item.productId)}
+                    onClick={() => decrementItem(item.lineId)}
                 >
                     <Minus className="h-4 w-4"/>
                 </Button>
                 <Input
                     type="number"
+                    step={isWeight ? 0.01 : 1}
                     value={item.quantity}
-                    onChange={(e) => setQuantity(item.productId, Number(e.target.value) || 0)}
-                    className="tabular h-9 w-14 text-center [appearance:textfield] px-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    onChange={(e) => setQuantity(item.lineId, Number(e.target.value) || 0)}
+                    className="tabular h-9 w-20 text-center [appearance:textfield] px-1 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     aria-label={`Quantity of ${item.name}`}
                 />
                 <Button
@@ -39,25 +52,25 @@ export function CartItemRow({item}: { item: CartItemType }) {
                     size="icon"
                     className="h-9 w-9"
                     aria-label={`Increase quantity of ${item.name}`}
-                    onClick={() => incrementItem(item.productId)}
+                    onClick={() => incrementItem(item.lineId)}
                 >
                     <Plus className="h-4 w-4"/>
                 </Button>
             </div>
 
-            <p className="tabular w-20 text-right text-sm font-semibold">
-                {formatCurrency(calculateLineTotal(item.price, item.quantity))}
+            <p className="tabular w-16 shrink-0 text-right text-sm font-semibold sm:w-20">
+                {fmt(calculateLineTotal(item.price, item.quantity))}
             </p>
 
             <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 text-muted-foreground"
+                className="h-9 w-9 shrink-0 text-muted-foreground"
                 aria-label={`Remove ${item.name} from cart`}
-                onClick={() => removeItem(item.productId)}
+                onClick={() => removeItem(item.lineId)}
             >
                 <X className="h-4 w-4"/>
             </Button>
         </div>
     );
-}
+});

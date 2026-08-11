@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import type {Product, ProductInput} from '@/types/product';
+import type {Product, ProductInput, WeightUnit} from '@/types/product';
 import type {Sale} from '@/types/sale';
 
 export function downloadCsv(filename: string, csv: string) {
@@ -14,15 +14,31 @@ export function downloadCsv(filename: string, csv: string) {
     URL.revokeObjectURL(url);
 }
 
-const PRODUCT_COLUMNS = ['name', 'barCode', 'price', 'purchasePrice', 'quantity'] as const;
+const PRODUCT_FIELDS = [
+    'name',
+    'barCode',
+    'price',
+    'purchasePrice',
+    'quantity',
+    'saleUnit',
+    'weightUnit',
+    'piecesPerPackage',
+    'packagePrice',
+] as const;
 
 export function productsToCsv(products: Product[]): string {
-    return Papa.unparse({
-        fields: [...PRODUCT_COLUMNS],
-        // barCode forced to a leading-space-free string — Papa would otherwise let
-        // spreadsheet apps re-interpret a numeric-looking barcode and drop zeroes.
-        data: products.map((p) => PRODUCT_COLUMNS.map((col) => String(p[col]))),
-    });
+    const data = products.map((p) => [
+        p.name,
+        p.barCode,
+        String(p.price),
+        String(p.purchasePrice),
+        String(p.quantity),
+        p.saleUnit,
+        p.weightUnit ?? 'kg',
+        p.packageOption ? String(p.packageOption.piecesPerPackage) : '',
+        p.packageOption ? String(p.packageOption.packagePrice) : '',
+    ]);
+    return Papa.unparse({fields: [...PRODUCT_FIELDS], data});
 }
 
 export interface ProductCsvRow {
@@ -41,9 +57,10 @@ export interface ParseProductsCsvResult {
 }
 
 /**
- * Parses a product import CSV. Expects headers: name, barCode, price,
- * purchasePrice, quantity (case-insensitive, order-independent). Never
- * coerces barCode to a number — it's read back exactly as typed in the file.
+ * Parses a product import CSV. Required columns: name, barCode, price,
+ * purchasePrice, quantity. Optional: saleUnit ("piece"/"weight", defaults
+ * to piece), weightUnit ("kg"/"g", defaults to kg), piecesPerPackage +
+ * packagePrice (both required together to enable package pricing).
  */
 export function parseProductsCsv(text: string): ParseProductsCsvResult {
     const parsed = Papa.parse<Record<string, string>>(text, {
@@ -56,7 +73,7 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
     const errors: ProductCsvError[] = [];
 
     parsed.data.forEach((raw, i) => {
-        const rowNumber = i + 2; // +1 for header row, +1 for 1-indexing
+        const rowNumber = i + 2;
         const name = (raw.name ?? '').trim();
         const barCode = (raw.barcode ?? '').trim();
         const price = Number(raw.price);
@@ -76,7 +93,7 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
             return;
         }
         if (!Number.isFinite(purchasePrice) || purchasePrice < 0) {
-            errors.push({row: rowNumber, message: `Invalid purchase price`});
+            errors.push({row: rowNumber, message: 'Invalid purchase price'});
             return;
         }
         if (!Number.isFinite(quantity) || quantity < 0) {
@@ -84,21 +101,33 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
             return;
         }
 
-        rows.push({row: rowNumber, data: {name, barCode, price, purchasePrice, quantity}});
+        const saleUnit = (raw.saleunit ?? 'piece').trim().toLowerCase() === 'weight' ? 'weight' : 'piece';
+        const weightUnit: WeightUnit = (raw.weightunit ?? 'kg').trim().toLowerCase() === 'g' ? 'g' : 'kg';
+        const piecesPerPackage = Number(raw.piecesperpackage);
+        const packagePrice = Number(raw.packageprice);
+        const packageOption =
+            Number.isFinite(piecesPerPackage) && piecesPerPackage > 0 && Number.isFinite(packagePrice) && packagePrice > 0
+                ? {piecesPerPackage, packagePrice}
+                : null;
+
+        rows.push({
+            row: rowNumber,
+            data: {name, barCode, price, purchasePrice, quantity, saleUnit, weightUnit, packageOption},
+        });
     });
 
     return {rows, errors};
 }
 
-/** Flattened one-row-per-line-item export — useful for accounting/reporting. */
 export function salesToCsv(sales: Sale[]): string {
-    const fields = ['saleId', 'date', 'product', 'barCode', 'unitPrice', 'quantity', 'subtotal', 'saleTotal'];
+    const fields = ['saleId', 'date', 'product', 'barCode', 'unit', 'unitPrice', 'quantity', 'subtotal', 'saleTotal'];
     const data = sales.flatMap((sale) =>
         sale.products.map((line) => [
             sale.id,
             sale.date,
             line.name,
             line.barCode,
+            line.unitLabel ?? (line.mode === 'package' ? 'package' : 'pc'),
             String(line.price),
             String(line.quantity),
             String(line.price * line.quantity),
