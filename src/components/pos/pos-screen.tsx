@@ -2,30 +2,40 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import dynamic from 'next/dynamic';
-import {ScanLine} from 'lucide-react';
+import {PauseCircle, PlayCircle, ScanLine} from 'lucide-react';
 import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Skeleton} from '@/components/ui/skeleton';
+import {Badge} from '@/components/ui/badge';
 import {Cart} from './cart';
 import {CheckoutDialog} from './checkout-dialog';
 import {BarcodeNotFound} from './barcode-not-found';
 import {QuickAddProductDialog} from './quick-add-product-dialog';
 import {AddSpecialItemDialog} from './add-special-item-dialog';
+import {HoldSaleDialog} from './hold-sale-dialog';
+import {HeldSalesListDialog} from './held-sales-list-dialog';
 import type {ScanFeedback} from '@/components/scanner/barcode-scanner';
 import {useBarcodeIndex, useProducts} from '@/hooks/use-products';
 import {useCreateSale} from '@/hooks/use-sales';
 import {useOnlineStatus} from '@/hooks/use-online-status';
 import {useFormatCurrency} from '@/hooks/use-currency';
+import {useCurrentEmployee} from '@/hooks/use-current-employee';
+import {useHeldSales} from '@/hooks/use-held-sales';
 import {enqueueSale} from '@/lib/offline/sale-queue';
 import {useCartStore} from '@/stores/cart-store';
 import {useHardwareBarcodeScanner} from '@/hooks/use-hardware-barcode-scanner';
 import {findProductByBarcode, findProductByNameOrBarcode, normalizeBarcode} from '@/lib/utils/barcode';
 import {matchesSearchQuery} from '@/lib/utils/search';
 import {playScanError, playScanSuccess} from '@/lib/utils/feedback';
+import {formatDateTime} from '@/lib/utils/dates';
 import type {Product} from '@/types/product';
+import type {HeldSale} from '@/types/held-sale';
 import {toast} from 'sonner';
 
+// Camera scanner is code-split and only fetched once the user actually taps
+// "Scan barcode" — most transactions may never need it (manual search /
+// hardware scanner also add to cart), so it shouldn't cost every POS load.
 const BarcodeScanner = dynamic(
     () => import('@/components/scanner/barcode-scanner').then((m) => m.BarcodeScanner),
     {
@@ -41,10 +51,12 @@ const BarcodeScanner = dynamic(
 export function PosScreen() {
     const {data: products = []} = useProducts();
     const barcodeIndex = useBarcodeIndex();
-    const {items, addProduct, addLine, clear, total, totalQuantity} = useCartStore();
+    const {items, addProduct, addLine, loadItems, clear, total, totalQuantity} = useCartStore();
     const createSale = useCreateSale();
     const isOnline = useOnlineStatus();
     const fmt = useFormatCurrency();
+    const {employee: currentEmployee} = useCurrentEmployee();
+    const {heldSales, hold, remove: removeHeld} = useHeldSales();
 
     const [inputValue, setInputValue] = useState('');
     const [scannerOpen, setScannerOpen] = useState(false);
@@ -59,6 +71,8 @@ export function PosScreen() {
     const [specialProduct, setSpecialProduct] = useState<Product | null>(null);
     const [scanFeedback, setScanFeedback] = useState<ScanFeedback | null>(null);
     const [lastScannedId, setLastScannedId] = useState<string | null>(null);
+    const [holdDialogOpen, setHoldDialogOpen] = useState(false);
+    const [heldListOpen, setHeldListOpen] = useState(false);
     const searchRef = useRef<HTMLInputElement>(null);
     const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -142,9 +156,8 @@ export function PosScreen() {
             } else {
                 playScanError();
                 const code = normalizeBarcode(barcode);
-                setScannerOpen(false);
                 setNotFoundCode(code);
-                toast.error(`Not found: ${code}`);
+                showScanFeedback({type: 'error', message: `Not found: ${code}`});
             }
         },
         [barcodeIndex, addProduct, showScanFeedback]
@@ -160,10 +173,8 @@ export function PosScreen() {
         if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
     }, []);
 
-    useHardwareBarcodeScanner({
-        onScan: handleBarcode,
-        enabled: !scannerOpen && !checkoutOpen && !quickAddOpen && !specialProduct,
-    });
+    const anyModalOpen = scannerOpen || checkoutOpen || quickAddOpen || Boolean(specialProduct) || holdDialogOpen || heldListOpen;
+    useHardwareBarcodeScanner({onScan: handleBarcode, enabled: !anyModalOpen});
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -196,6 +207,8 @@ export function PosScreen() {
             date: new Date().toISOString(),
             totalPrice: total(),
             totalQuantity: totalQuantity(),
+            ...(currentEmployee?.id ? {employeeId: currentEmployee.id} : {}),
+            ...(currentEmployee?.name ? {employeeName: currentEmployee.name} : {}),
             products: items.map((item) => ({
                 idProduct: item.productId,
                 name: item.name,
@@ -205,13 +218,16 @@ export function PosScreen() {
                 quantity: item.quantity,
                 date: new Date().toISOString(),
                 mode: item.mode,
-                unitLabel: item.unitLabel,
+                ...(item.unitLabel ? {unitLabel: item.unitLabel} : {}),
             })),
         };
 
         setIsCheckingOut(true);
         try {
-            if (isOnline) {
+            if (!isOnline) {
+                enqueueSale(sale);
+                toast.info('Saved offline — will sync automatically once back online');
+            } else {
                 const created = await createSale.mutateAsync(sale);
                 toast.success('Sale completed', {
                     action: {
@@ -219,12 +235,14 @@ export function PosScreen() {
                         onClick: () => window.open(`/print/receipt/${created.id}`, '_blank'),
                     },
                 });
-            } else {
-                throw new Error('offline');
             }
-        } catch {
+        } catch (error) {
+            // Genuine failure while online — don't silently mask it as "saved offline".
+            console.error('Sale failed', error);
             enqueueSale(sale);
-            toast.info('Saved offline — will sync automatically once back online');
+            toast.error('Could not save sale online — queued to retry automatically', {
+                description: error instanceof Error ? error.message : undefined,
+            });
         } finally {
             setIsCheckingOut(false);
         }
@@ -232,6 +250,28 @@ export function PosScreen() {
         clear();
         setLastScannedId(null);
         setCheckoutOpen(false);
+        searchRef.current?.focus();
+    };
+
+    const handleHoldSale = (label: string) => {
+        hold(items, label);
+        clear();
+        setLastScannedId(null);
+        toast.success('Sale held', {description: label});
+        searchRef.current?.focus();
+    };
+
+    const handleResumeHeld = (saved: HeldSale) => {
+        if (items.length > 0) {
+            // Park the current cart too rather than silently discarding it —
+            // a cashier resuming one held sale shouldn't lose whatever's already
+            // in progress.
+            hold(items, `Auto-held ${formatDateTime(new Date().toISOString())}`);
+        }
+        loadItems(saved.items);
+        removeHeld(saved.id);
+        setHeldListOpen(false);
+        toast.success('Sale resumed', {description: saved.label});
         searchRef.current?.focus();
     };
 
@@ -284,6 +324,28 @@ export function PosScreen() {
                         <Button size="lg" className="h-12 shrink-0" onClick={openScanner}>
                             <ScanLine className="h-5 w-5"/>
                             Scan barcode
+                        </Button>
+                    </div>
+
+                    <div className="mt-2 flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            disabled={items.length === 0}
+                            onClick={() => setHoldDialogOpen(true)}
+                        >
+                            <PauseCircle className="h-4 w-4"/>
+                            Hold sale
+                        </Button>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setHeldListOpen(true)}>
+                            <PlayCircle className="h-4 w-4"/>
+                            Held sales
+                            {heldSales.length > 0 && (
+                                <Badge variant="secondary" className="ml-1">
+                                    {heldSales.length}
+                                </Badge>
+                            )}
                         </Button>
                     </div>
                 </Card>
@@ -367,9 +429,30 @@ export function PosScreen() {
                 onOpenChange={(open) => !open && setSpecialProduct(null)}
                 onConfirm={({mode, quantity, unitPrice, unitLabel}) => {
                     if (!specialProduct) return;
-                    addLine({product: specialProduct, mode, quantity, unitPrice, unitLabel});
+                    addLine({
+                        product: specialProduct,
+                        mode,
+                        quantity,
+                        unitPrice,
+                        ...(unitLabel ? {unitLabel} : {}),
+                    });
                     playScanSuccess();
                 }}
+            />
+
+            <HoldSaleDialog
+                open={holdDialogOpen}
+                onOpenChange={setHoldDialogOpen}
+                onConfirm={handleHoldSale}
+                suggestedLabel={`Sale ${formatDateTime(new Date().toISOString())}`}
+            />
+
+            <HeldSalesListDialog
+                open={heldListOpen}
+                onOpenChange={setHeldListOpen}
+                heldSales={heldSales}
+                onResume={handleResumeHeld}
+                onDelete={removeHeld}
             />
         </div>
     );

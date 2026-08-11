@@ -9,6 +9,7 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import Link from 'next/link';
 import {useAuth} from '@/components/auth/auth-provider';
 import {signOutUser} from '@/lib/firebase/auth/auth';
+import {EmployeePicker} from '@/components/settings/employee-picker';
 
 export function Topbar({title}: { title: string }) {
     const {theme, setTheme} = useTheme();
@@ -32,6 +33,7 @@ export function Topbar({title}: { title: string }) {
             </div>
             <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
             <div className="flex items-center gap-2">
+                <EmployeePicker/>
                 <Button variant="ghost" size="icon" asChild className="hidden sm:inline-flex">
                     <Link href="/sale" aria-label="New sale">
                         <ScanBarcode className="h-[18px] w-[18px]"/>

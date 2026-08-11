@@ -8,6 +8,8 @@ import {Button} from '@/components/ui/button';
 import type {Sale} from '@/types/sale';
 import {formatDateTime} from '@/lib/utils/dates';
 import {useFormatCurrency} from '@/hooks/use-currency';
+import {getSaleRefundedTotal} from '@/lib/utils/refund';
+import {Badge} from '@/components/ui/badge';
 
 interface Props {
     sales: Sale[];
@@ -42,7 +44,14 @@ export function SalesTable({sales, onDelete}: Props) {
                                 <TableCell>{formatDateTime(sale.date)}</TableCell>
                                 <TableCell className="tabular text-right">{sale.products?.length ?? 0}</TableCell>
                                 <TableCell className="tabular text-right">{sale.totalQuantity ?? 0}</TableCell>
-                                <TableCell className="tabular text-right font-medium">{fmt(sale.totalPrice)}</TableCell>
+                                <TableCell className="tabular text-right font-medium">
+                                    {fmt(sale.totalPrice)}
+                                    {getSaleRefundedTotal(sale) > 0 && (
+                                        <Badge variant="warning" className="ml-2">
+                                            {getSaleRefundedTotal(sale) >= sale.totalPrice ? 'Refunded' : 'Partial refund'}
+                                        </Badge>
+                                    )}
+                                </TableCell>
                                 <TableCell className="text-right">
                                     <Button
                                         variant="ghost"

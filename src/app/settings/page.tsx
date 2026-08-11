@@ -13,6 +13,8 @@ import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
 import {useCurrency} from '@/hooks/use-currency';
 import {SUPPORTED_CURRENCIES} from '@/lib/utils/currency';
 import {useCameraPermission} from '@/hooks/use-camera-permission';
+import Link from 'next/link';
+import {FileBarChart, UsersRound} from 'lucide-react';
 
 const THEMES = [
     {value: 'light', label: 'Light'},
@@ -131,6 +133,34 @@ export default function SettingsPage() {
                             and will ask
                             again; this is a browser security rule, not something the app controls.
                         </p>
+                    </CardContent>
+                </Card>
+
+                <Card className="max-w-md">
+                    <CardHeader>
+                        <CardTitle>Team</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                        <Button asChild variant="outline" className="w-full justify-start">
+                            <Link href="/settings/employees">
+                                <UsersRound className="h-4 w-4"/>
+                                Manage employees
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                <Card className="max-w-md">
+                    <CardHeader>
+                        <CardTitle>Reports</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                        <Button asChild variant="outline" className="w-full justify-start">
+                            <Link href="/reports/end-of-day">
+                                <FileBarChart className="h-4 w-4"/>
+                                End of day report
+                            </Link>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

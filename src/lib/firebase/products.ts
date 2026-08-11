@@ -23,8 +23,8 @@ function normalizeProduct(id: string, raw: RawProduct): Product {
         saleUnit: raw.saleUnit === 'weight' ? 'weight' : 'piece',
         weightUnit: raw.weightUnit === 'g' ? 'g' : 'kg',
         packageOption: raw.packageOption ?? null,
-        createdAt: raw.createdAt,
-        updatedAt: raw.updatedAt,
+        createdAt: raw.createdAt ?? new Date(0).toISOString(),
+        updatedAt: raw.updatedAt ?? new Date(0).toISOString(),
     };
 }
 

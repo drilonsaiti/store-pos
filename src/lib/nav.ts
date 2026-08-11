@@ -1,5 +1,5 @@
 import type {LucideIcon} from 'lucide-react';
-import {LayoutDashboard, Package, Receipt, ScanBarcode, Settings} from 'lucide-react';
+import {FileBarChart, LayoutDashboard, Package, Receipt, ScanBarcode, Settings} from 'lucide-react';
 
 export interface NavItem {
     href: string;
@@ -12,7 +12,9 @@ export const NAV_ITEMS: NavItem[] = [
     {href: '/products', label: 'Products', icon: Package},
     {href: '/sale', label: 'POS', icon: ScanBarcode},
     {href: '/sales', label: 'Sales', icon: Receipt},
+    {href: '/reports/end-of-day', label: 'Reports', icon: FileBarChart},
     {href: '/settings', label: 'Settings', icon: Settings},
+
 ];
 
 // Mobile bottom nav swaps Settings for a compact "More" — kept to 5 max touch targets.

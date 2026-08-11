@@ -2,7 +2,7 @@
 
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import * as api from '@/lib/firebase/sales';
-import type {Sale, SaleInput} from '@/types/sale';
+import type {Refund, Sale, SaleInput} from '@/types/sale';
 import {toast} from 'sonner';
 
 const SALES_KEY = ['sales'] as const;
@@ -48,5 +48,26 @@ export function useDeleteSale() {
         },
         onSuccess: () => toast.success('Sale deleted'),
         onSettled: () => queryClient.invalidateQueries({queryKey: SALES_KEY}),
+    });
+}
+
+export function useRefundSale() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+                         saleId,
+                         refund,
+                         restock,
+                     }: {
+            saleId: string;
+            refund: Omit<Refund, 'id'>;
+            restock: Array<{ productId: string; quantityToAdd: number }>;
+        }) => api.refundSale(saleId, refund, restock),
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: SALES_KEY});
+            queryClient.invalidateQueries({queryKey: ['products']});
+            toast.success('Refund recorded');
+        },
+        onError: () => toast.error('Could not process the refund. Try again.'),
     });
 }

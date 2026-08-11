@@ -23,6 +23,7 @@ interface CartState {
     setQuantity: (lineId: string, quantity: number) => void;
     removeItem: (lineId: string) => void;
     clear: () => void;
+    loadItems: (items: CartItem[]) => void;
     total: () => number;
     totalQuantity: () => number;
 }
@@ -67,10 +68,10 @@ export const useCartStore = create<CartState>((set, get) => ({
                 name: product.name,
                 barcode: product.barCode,
                 mode,
-                unitLabel,
                 price: unitPrice,
                 purchasePrice: product.purchasePrice,
                 quantity: roundQuantity(quantity, mode),
+                ...(unitLabel ? {unitLabel} : {}),
             };
             return {items: [newItem, ...state.items]};
         }),
@@ -106,6 +107,8 @@ export const useCartStore = create<CartState>((set, get) => ({
     removeItem: (lineId) => set((state) => ({items: state.items.filter((i) => i.lineId !== lineId)})),
 
     clear: () => set({items: []}),
+
+    loadItems: (items) => set({items}),
 
     total: () => calculateCartTotal(get().items),
 

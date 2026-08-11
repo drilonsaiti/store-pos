@@ -96,7 +96,8 @@ export function BarcodeScanner({
                             <div className="absolute inset-0 flex items-center justify-center p-6">
                                 <div
                                     className="relative aspect-[3/2] w-full max-w-xs overflow-hidden rounded-2xl border-2 border-white/80">
-                                    <div className="absolute inset-x-0 top-0 h-0.5 animate-scan-line bg-primary"/>                                </div>
+                                    <div className="absolute inset-x-0 top-0 h-0.5 animate-scan-line bg-primary"/>
+                                </div>
                             </div>
                         )}
 

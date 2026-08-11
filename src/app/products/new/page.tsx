@@ -18,9 +18,11 @@ function NewProductForm() {
         router.push('/products');
     };
 
+    const prefillProduct = prefillBarcode ? ({barCode: prefillBarcode} as Product) : undefined;
+
     return (
         <ProductForm
-            product={prefillBarcode ? ({barCode: prefillBarcode} as Product) : undefined}
+            {...(prefillProduct ? {product: prefillProduct} : {})}
             onSubmit={handleSubmit}
             submitLabel="Add product"
         />
