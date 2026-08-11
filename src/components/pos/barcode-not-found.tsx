@@ -1,6 +1,6 @@
 'use client';
 
-import {PackageSearch} from 'lucide-react';
+import {PackageSearch, X} from 'lucide-react';
 import {Card, CardContent} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 
@@ -9,11 +9,22 @@ interface Props {
     onCreateProduct: () => void;
     onSearchManually: () => void;
     onScanAgain: () => void;
+    onClose: () => void;
 }
 
-export function BarcodeNotFound({barcode, onCreateProduct, onSearchManually, onScanAgain}: Props) {
+export function BarcodeNotFound({barcode, onCreateProduct, onSearchManually, onScanAgain, onClose}: Props) {
     return (
-        <Card className="border-warning/40 bg-warning/5">
+        <Card className="relative border-warning/40 bg-warning/5">
+            <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2 h-7 w-7"
+                onClick={onClose}
+                aria-label="Dismiss"
+            >
+                <X className="h-4 w-4"/>
+            </Button>
             <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
                 <PackageSearch className="h-8 w-8 text-warning"/>
                 <div>

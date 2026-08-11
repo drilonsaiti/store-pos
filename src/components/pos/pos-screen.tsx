@@ -131,9 +131,6 @@ export function PosScreen() {
             const product = findProductByBarcode(barcodeIndex, barcode);
             if (product) {
                 if (product.saleUnit === 'weight' || product.packageOption) {
-                    // Weight/package products need a decision dialog — close the
-                    // camera and hand off to the main-screen picker rather than
-                    // stacking a second dialog on top of the scanner.
                     setScannerOpen(false);
                     setSpecialProduct(product);
                     return;
@@ -145,8 +142,9 @@ export function PosScreen() {
             } else {
                 playScanError();
                 const code = normalizeBarcode(barcode);
+                setScannerOpen(false);
                 setNotFoundCode(code);
-                showScanFeedback({type: 'error', message: `Not found: ${code}`});
+                toast.error(`Not found: ${code}`);
             }
         },
         [barcodeIndex, addProduct, showScanFeedback]
@@ -302,6 +300,7 @@ export function PosScreen() {
                             setNotFoundCode(null);
                             openScanner();
                         }}
+                        onClose={() => setNotFoundCode(null)}
                     />
                 )}
 
@@ -351,11 +350,15 @@ export function PosScreen() {
 
             <QuickAddProductDialog
                 open={quickAddOpen}
-                onOpenChange={setQuickAddOpen}
+                onOpenChange={(open) => {
+                    setQuickAddOpen(open);
+                    if (!open) setNotFoundCode(null);
+                }}
                 barcode={notFoundCode ?? ''}
                 onCreated={(product) => {
                     addToCart(product);
                     setQuickAddOpen(false);
+                    setNotFoundCode(null);
                 }}
             />
 

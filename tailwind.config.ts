@@ -60,13 +60,13 @@ const config: Config = {
             },
             keyframes: {
                 'scan-line': {
-                    '0%': {transform: 'translateY(0%)'},
-                    '50%': {transform: 'translateY(100%)'},
-                    '100%': {transform: 'translateY(0%)'},
+                    '0%': {top: '0%'},
+                    '50%': {top: 'calc(100% - 2px)'},
+                    '100%': {top: '0%'},
                 },
             },
             animation: {
-                'scan-line': 'scan-line 2s ease-in-out infinite',
+                'scan-line': 'scan-line 3.5s ease-in-out infinite',
             },
         },
     },
