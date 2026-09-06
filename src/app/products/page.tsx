@@ -3,7 +3,7 @@
 import {useMemo, useState} from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import {Download, Package, Plus, ScanLine, Upload} from 'lucide-react';
+import {Download, Package, Plus, ScanLine, Upload, PackagePlus } from 'lucide-react';
 import {AppShell} from '@/components/layout/app-shell';
 import {ProductSearch} from '@/components/products/product-search';
 import {ProductTable} from '@/components/products/product-table';
@@ -74,6 +74,12 @@ export default function ProductsPage() {
                         </Button>
                     </div>
                     <div className="flex gap-2">
+                        <Button variant="outline" size="lg" className="sm:size-default" asChild>
+                            <Link href="/products/restock">
+                                <PackagePlus className="h-4 w-4" />
+                                <span className="hidden sm:inline">Add inventory</span>
+                            </Link>
+                        </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="lg" className="sm:size-default">

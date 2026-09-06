@@ -32,7 +32,7 @@ import {formatDateTime} from '@/lib/utils/dates';
 import type {Product} from '@/types/product';
 import type {HeldSale} from '@/types/held-sale';
 import {toast} from 'sonner';
-
+import type { PaymentInfo } from './checkout-dialog';
 // Camera scanner is code-split and only fetched once the user actually taps
 // "Scan barcode" — most transactions may never need it (manual search /
 // hardware scanner also add to cart), so it shouldn't cost every POS load.
@@ -202,13 +202,19 @@ export function PosScreen() {
 
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const handleConfirmSale = async () => {
+    const handleConfirmSale = async (payment: { amountReceived?: number; changeDue?: number }) => {
         const sale = {
             date: new Date().toISOString(),
             totalPrice: total(),
             totalQuantity: totalQuantity(),
             ...(currentEmployee?.id ? {employeeId: currentEmployee.id} : {}),
             ...(currentEmployee?.name ? {employeeName: currentEmployee.name} : {}),
+            ...(payment.amountReceived !== undefined
+                ? { amountReceived: payment.amountReceived }
+                : {}),
+            ...(payment.changeDue !== undefined
+                ? { changeDue: payment.changeDue }
+                : {}),
             products: items.map((item) => ({
                 idProduct: item.productId,
                 name: item.name,

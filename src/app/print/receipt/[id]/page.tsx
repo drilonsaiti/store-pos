@@ -51,6 +51,18 @@ export default function ReceiptPrintPage() {
                             <span>TOTAL</span>
                             <span className="tabular">{formatCurrency(sale.totalPrice, currency)}</span>
                         </div>
+                        {typeof sale.amountReceived === 'number' && (
+                            <>
+                                <div className="flex justify-between">
+                                    <span>Cash received</span>
+                                    <span className="tabular">{formatCurrency(sale.amountReceived, currency)}</span>
+                                </div>
+                                <div className="flex justify-between font-bold">
+                                    <span>Change</span>
+                                    <span className="tabular">{formatCurrency(sale.changeDue ?? 0, currency)}</span>
+                                </div>
+                            </>
+                        )}
                         <p className="mt-4 text-center">Thank you!</p>
                     </div>
                 )}

@@ -86,3 +86,17 @@ export function useDeleteProduct() {
         onSettled: () => queryClient.invalidateQueries({queryKey: PRODUCTS_KEY}),
     });
 }
+
+export function useIncrementProductQuantity() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, delta }: { id: string; delta: number }) => api.incrementProductQuantity(id, delta),
+        onSuccess: (newQuantity, { id }) => {
+            queryClient.setQueryData<Product[]>(PRODUCTS_KEY, (old) =>
+                old?.map((p) => (p.id === id ? { ...p, quantity: newQuantity } : p))
+            );
+            queryClient.invalidateQueries({ queryKey: ['products', id] });
+        },
+        onError: () => toast.error('Could not update stock. Try again.'),
+    });
+}

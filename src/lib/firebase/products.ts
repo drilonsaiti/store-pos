@@ -1,4 +1,4 @@
-import {child, get, push, ref, remove, set, update} from 'firebase/database';
+import { ref, get, set, push, update, remove, child, runTransaction } from 'firebase/database';
 import {FirebaseUnavailableError, getDb} from './client';
 import type {PackageOption, Product, ProductInput, SaleUnit, WeightUnit} from '@/types/product';
 
@@ -115,6 +115,16 @@ export async function updateProduct(id: string, product: Partial<ProductInput>):
 export async function deleteProduct(id: string): Promise<void> {
     try {
         await remove(child(ref(getDb(), PATH), id));
+    } catch (error) {
+        throw new FirebaseUnavailableError(error);
+    }
+}
+
+export async function incrementProductQuantity(id: string, delta: number): Promise<number> {
+    try {
+        const result = await runTransaction(ref(getDb(), `${PATH}/${id}/quantity`), (current) => (current ?? 0) + delta);
+        if (!result.committed) throw new Error('Transaction did not commit');
+        return (result.snapshot.val() as number) ?? 0;
     } catch (error) {
         throw new FirebaseUnavailableError(error);
     }

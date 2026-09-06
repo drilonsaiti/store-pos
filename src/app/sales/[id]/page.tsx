@@ -129,6 +129,11 @@ export default function SaleDetailPage() {
                                         <>
                                             <p className="text-sm text-muted-foreground">Total</p>
                                             <p className="tabular text-2xl font-semibold">{fmt(sale.totalPrice)}</p>
+                                            {typeof sale.amountReceived === 'number' && (
+                                                <p className="tabular mt-1 text-xs text-muted-foreground">
+                                                    Cash {fmt(sale.amountReceived)} · Change {fmt(sale.changeDue ?? 0)}
+                                                </p>
+                                            )}
                                         </>
                                     )}
                                 </div>

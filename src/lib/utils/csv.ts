@@ -28,16 +28,17 @@ const PRODUCT_FIELDS = [
 
 export function productsToCsv(products: Product[]): string {
     const data = products.map((p) => [
-        p.name,
-        p.barCode,
+        csvSafe(p.name),
+        csvSafe(p.barCode),
         String(p.price),
         String(p.purchasePrice),
         String(p.quantity),
-        p.saleUnit,
-        p.weightUnit ?? 'kg',
+        csvSafe(p.saleUnit),
+        csvSafe(p.weightUnit ?? 'kg'),
         p.packageOption ? String(p.packageOption.piecesPerPackage) : '',
         p.packageOption ? String(p.packageOption.packagePrice) : '',
     ]);
+
     return Papa.unparse({fields: [...PRODUCT_FIELDS], data});
 }
 
@@ -101,18 +102,39 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
             return;
         }
 
-        const saleUnit = (raw.saleunit ?? 'piece').trim().toLowerCase() === 'weight' ? 'weight' : 'piece';
-        const weightUnit: WeightUnit = (raw.weightunit ?? 'kg').trim().toLowerCase() === 'g' ? 'g' : 'kg';
+        const saleUnit =
+            (raw.saleunit ?? 'piece').trim().toLowerCase() === 'weight'
+                ? 'weight'
+                : 'piece';
+
+        const weightUnit: WeightUnit =
+            (raw.weightunit ?? 'kg').trim().toLowerCase() === 'g'
+                ? 'g'
+                : 'kg';
+
         const piecesPerPackage = Number(raw.piecesperpackage);
         const packagePrice = Number(raw.packageprice);
+
         const packageOption =
-            Number.isFinite(piecesPerPackage) && piecesPerPackage > 0 && Number.isFinite(packagePrice) && packagePrice > 0
+            Number.isFinite(piecesPerPackage) &&
+            piecesPerPackage > 0 &&
+            Number.isFinite(packagePrice) &&
+            packagePrice > 0
                 ? {piecesPerPackage, packagePrice}
                 : null;
 
         rows.push({
             row: rowNumber,
-            data: {name, barCode, price, purchasePrice, quantity, saleUnit, weightUnit, packageOption},
+            data: {
+                name,
+                barCode,
+                price,
+                purchasePrice,
+                quantity,
+                saleUnit,
+                weightUnit,
+                packageOption,
+            },
         });
     });
 
@@ -120,19 +142,39 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
 }
 
 export function salesToCsv(sales: Sale[]): string {
-    const fields = ['saleId', 'date', 'product', 'barCode', 'unit', 'unitPrice', 'quantity', 'subtotal', 'saleTotal'];
+    const fields = [
+        'saleId',
+        'date',
+        'product',
+        'barCode',
+        'unit',
+        'unitPrice',
+        'quantity',
+        'subtotal',
+        'saleTotal',
+    ];
+
     const data = sales.flatMap((sale) =>
         sale.products.map((line) => [
-            sale.id,
-            sale.date,
-            line.name,
-            line.barCode,
-            line.unitLabel ?? (line.mode === 'package' ? 'package' : 'pc'),
+            csvSafe(sale.id),
+            csvSafe(sale.date),
+            csvSafe(line.name),
+            csvSafe(line.barCode),
+            csvSafe(
+                line.unitLabel ??
+                    (line.mode === 'package' ? 'package' : 'pc')
+            ),
             String(line.price),
             String(line.quantity),
             String(line.price * line.quantity),
             String(sale.totalPrice),
         ])
     );
+
     return Papa.unparse({fields, data});
 }
+
+function csvSafe(value: string): string {
+    return /^[=+\-@]/.test(value) ? `'${value}` : value;
+}
+

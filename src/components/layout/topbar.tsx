@@ -10,6 +10,7 @@ import Link from 'next/link';
 import {useAuth} from '@/components/auth/auth-provider';
 import {signOutUser} from '@/lib/firebase/auth/auth';
 import {EmployeePicker} from '@/components/settings/employee-picker';
+import {clearLocalAppData} from "@/lib/utils/clear-local-data";
 
 export function Topbar({title}: { title: string }) {
     const {theme, setTheme} = useTheme();
@@ -20,6 +21,7 @@ export function Topbar({title}: { title: string }) {
 
     const handleSignOut = async () => {
         await signOutUser();
+        clearLocalAppData();
         router.replace('/login');
     };
 

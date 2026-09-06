@@ -37,6 +37,8 @@ export interface Sale {
     totalQuantity: number;
     employeeId?: string;
     employeeName?: string;
+    amountReceived?: number;
+    changeDue?: number;
     refunds?: Refund[];
 }
 
