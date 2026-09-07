@@ -39,7 +39,10 @@ export function useCreateProduct() {
             queryClient.setQueryData<Product[]>(PRODUCTS_KEY, (old) => (old ? [created, ...old] : [created]));
             toast.success('Product added');
         },
-        onError: () => toast.error('Could not add the product. Try again.'),
+        onError: (error) =>
+            toast.error(
+                error instanceof api.DuplicateBarcodeError ? error.message : 'Could not add the product. Try again.'
+            ),
     });
 }
 
@@ -51,7 +54,12 @@ export function useBulkCreateProducts() {
             queryClient.setQueryData<Product[]>(PRODUCTS_KEY, (old) => (old ? [...created, ...old] : created));
             toast.success(`Imported ${created.length} product${created.length === 1 ? '' : 's'}`);
         },
-        onError: () => toast.error('Import failed. No products were saved.'),
+        onError: (error) =>
+            toast.error(
+                error instanceof api.DuplicateBarcodeError
+                    ? `Import failed — ${error.message}`
+                    : 'Import failed. No products were saved.'
+            ),
     });
 }
 
@@ -64,7 +72,10 @@ export function useUpdateProduct() {
             queryClient.invalidateQueries({queryKey: PRODUCTS_KEY});
             toast.success('Product updated');
         },
-        onError: () => toast.error('Could not update the product. Try again.'),
+        onError: (error) =>
+            toast.error(
+                error instanceof api.DuplicateBarcodeError ? error.message : 'Could not update the product. Try again.'
+            ),
     });
 }
 

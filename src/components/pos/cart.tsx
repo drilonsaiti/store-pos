@@ -4,8 +4,13 @@ import {ShoppingCart} from 'lucide-react';
 import {CartItemRow} from './cart-item';
 import {EmptyState} from '@/components/ui/empty-state';
 import {useCartStore} from '@/stores/cart-store';
+import type {Product} from '@/types/product';
 
-export function Cart() {
+interface Props {
+    products: Product[];
+}
+
+export function Cart({products}: Props) {
     const items = useCartStore((s) => s.items);
 
     if (items.length === 0) {
@@ -21,7 +26,7 @@ export function Cart() {
     return (
         <div className="divide-y">
             {items.map((item) => (
-                <CartItemRow key={item.lineId} item={item}/>
+                <CartItemRow key={item.lineId} item={item} products={products}/>
             ))}
         </div>
     );

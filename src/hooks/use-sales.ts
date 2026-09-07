@@ -4,6 +4,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import * as api from '@/lib/firebase/sales';
 import type {Refund, Sale, SaleInput} from '@/types/sale';
 import {toast} from 'sonner';
+import {StockDelta} from "@/lib/utils/stock";
 
 const SALES_KEY = ['sales'] as const;
 
@@ -22,9 +23,11 @@ export function useSale(id: string | undefined) {
 export function useCreateSale() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (sale: SaleInput) => api.createSale(sale),
+        mutationFn: ({sale, stockDeltas}: {sale: SaleInput; stockDeltas: StockDelta[]}) =>
+            api.createSale(sale, stockDeltas),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: SALES_KEY});
+            queryClient.invalidateQueries({queryKey: ['products']});
         },
         // No onError toast here — PosScreen owns user-facing messaging for a
         // failed save, since it falls back to the offline queue instead of
@@ -57,17 +60,22 @@ export function useRefundSale() {
         mutationFn: ({
                          saleId,
                          refund,
-                         restock,
+                         stockDeltas,
                      }: {
             saleId: string;
             refund: Omit<Refund, 'id'>;
-            restock: Array<{ productId: string; quantityToAdd: number }>;
-        }) => api.refundSale(saleId, refund, restock),
+            stockDeltas: StockDelta[];
+        }) => api.refundSale(saleId, refund, stockDeltas),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: SALES_KEY});
             queryClient.invalidateQueries({queryKey: ['products']});
             toast.success('Refund recorded');
         },
-        onError: () => toast.error('Could not process the refund. Try again.'),
+        onError: (error) =>
+            toast.error(
+                error instanceof Error && error.name === 'RefundExceedsAvailableError'
+                    ? error.message
+                    : 'Could not process the refund. Try again.'
+            ),
     });
 }

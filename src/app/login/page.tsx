@@ -11,6 +11,8 @@ import {useAuth} from '@/components/auth/auth-provider';
 import {signIn, signUp} from '@/lib/firebase/auth/auth';
 import {toast} from 'sonner';
 
+const SIGNUP_ENABLED = process.env.NEXT_PUBLIC_ALLOW_SIGNUP === 'true';
+
 export default function LoginPage() {
     const router = useRouter();
     const {user, loading: authLoading} = useAuth();
@@ -29,8 +31,10 @@ export default function LoginPage() {
         try {
             if (mode === 'sign-in') {
                 await signIn(email, password);
-            } else {
+            } else if (SIGNUP_ENABLED) {
                 await signUp(email, password);
+            } else {
+                throw new Error('Sign-up is currently disabled.');
             }
             router.replace('/');
         } catch (error) {
@@ -91,13 +95,15 @@ export default function LoginPage() {
                             {mode === 'sign-in' ? 'Sign in' : 'Create account'}
                         </Button>
                     </form>
-                    <button
-                        type="button"
-                        onClick={() => setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in')}
-                        className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-                    >
-                        {mode === 'sign-in' ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
-                    </button>
+                    {SIGNUP_ENABLED && (
+                        <button
+                            type="button"
+                            onClick={() => setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in')}
+                            className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+                        >
+                            {mode === 'sign-in' ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
+                        </button>
+                    )}
                 </CardContent>
             </Card>
         </div>

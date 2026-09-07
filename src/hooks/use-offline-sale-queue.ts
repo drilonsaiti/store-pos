@@ -9,6 +9,13 @@ import {toast} from 'sonner';
 
 export type SyncStatus = 'idle' | 'syncing';
 
+/** Cross-tab mutex name for the offline-queue flush. Two tabs on the same
+ * device both reacting to the browser's 'online' event at once is a normal
+ * occurrence, not an edge case — without this, both would read the same
+ * pending queue before either had dequeued anything and could both submit
+ * the same queued sale. */
+const SYNC_LOCK_NAME = 'store-console:offline-sale-sync';
+
 let cachedQueue: QueuedSale[] | null = null;
 
 function readQueue(): QueuedSale[] {
@@ -53,40 +60,68 @@ export function useOfflineSaleQueue() {
     );
 
     const sync = useCallback(async () => {
-        // Guards against duplicate sales: only one flush runs at a time, each
-        // queued sale is only removed after Firebase confirms the write, and a
-        // failed item stops the run rather than being retried in a tight loop.
+        // Per-tab guard: prevents this hook instance from starting a second
+        // flush while one is already running (e.g. rapid repeated 'online'
+        // events firing in quick succession within the same tab).
         if (syncingRef.current) return;
 
-        const pending = getQueuedSales();
-
-        if (pending.length === 0) return;
+        if (getQueuedSales().length === 0) return;
 
         syncingRef.current = true;
         setStatus('syncing');
 
-        let syncedCount = 0;
+        const runSync = async () => {
+            // Re-read here, not from the check above: time may have passed
+            // while waiting for the cross-tab lock, and another tab could
+            // have already drained some (or all) of the queue in the
+            // meantime.
+            const pending = getQueuedSales();
+            let syncedCount = 0;
 
-        for (const item of pending) {
-            try {
-                await salesApi.createSale(item.sale);
-                dequeueSale(item.localId);
-                syncedCount++;
-            } catch {
-                break;
+            for (const item of pending) {
+                try {
+                    await salesApi.createSale(item.sale, item.stockDeltas ?? []);
+                    dequeueSale(item.localId);
+                    syncedCount++;
+                } catch {
+                    break;
+                }
             }
-        }
 
-        if (syncedCount > 0) {
-            queryClient.invalidateQueries({queryKey: ['sales']});
-            toast.success(
-                `Synced ${syncedCount} offline sale${syncedCount === 1 ? '' : 's'}`,
-            );
-        }
+            if (syncedCount > 0) {
+                queryClient.invalidateQueries({queryKey: ['sales']});
+                queryClient.invalidateQueries({queryKey: ['products']});
+                toast.success(
+                    `Synced ${syncedCount} offline sale${syncedCount === 1 ? '' : 's'}`,
+                );
+            }
+        };
 
-        cachedQueue = null;
-        setStatus('idle');
-        syncingRef.current = false;
+        try {
+            if (typeof navigator !== 'undefined' && 'locks' in navigator) {
+                // Cross-tab guard. {ifAvailable: true} makes this resolve
+                // immediately with lock === null if another tab already
+                // holds it, instead of queuing behind it — we just skip this
+                // run rather than duplicate-submit whatever the other tab is
+                // already mid-way through sending. The other tab's own sync
+                // will dequeue the shared (localStorage) queue, and this
+                // tab's UI updates automatically via the native 'storage'
+                // event already wired up in subscribe() below.
+                await navigator.locks.request(SYNC_LOCK_NAME, {ifAvailable: true}, async (lock) => {
+                    if (!lock) return;
+                    await runSync();
+                });
+            } else {
+                // No Web Locks support (rare, older browsers) — run
+                // unguarded across tabs. The per-tab syncingRef guard above
+                // still applies; only the cross-tab case is unprotected here.
+                await runSync();
+            }
+        } finally {
+            cachedQueue = null;
+            setStatus('idle');
+            syncingRef.current = false;
+        }
     }, [queryClient]);
 
     // Auto-sync whenever connectivity returns.

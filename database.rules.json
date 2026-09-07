@@ -1,0 +1,127 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "staff": {
+      ".read": false,
+      ".write": false
+    },
+
+    "products": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()",
+      "$productId": {
+        ".validate": "newData.hasChildren(['name', 'barCode', 'price', 'purchasePrice', 'quantity', 'saleUnit'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "barCode": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "price": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "purchasePrice": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "quantity": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "saleUnit": {
+          ".validate": "newData.isString() && (newData.val() === 'piece' || newData.val() === 'weight')"
+        },
+        "weightUnit": {
+          ".validate": "newData.val() === 'kg' || newData.val() === 'g'"
+        },
+        "packageOption": {
+          ".validate": "newData.val() === null || newData.hasChildren(['piecesPerPackage', 'packagePrice'])",
+          "piecesPerPackage": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "packagePrice": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          }
+        },
+        "createdAt": {
+          ".validate": "newData.isString()"
+        },
+        "updatedAt": {
+          ".validate": "newData.isString()"
+        }
+      }
+    },
+
+    "sale": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()",
+      "$saleId": {
+        "totalPrice": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "totalQuantity": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "amountReceived": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "changeDue": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "products": {
+          "$index": {
+            "price": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "quantity": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            }
+          }
+        },
+        "refunds": {
+          "$refundId": {
+            "amount": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "lines": {
+              "$index": {
+                "quantity": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0"
+                },
+                "price": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "barcodes": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      "$barCode": {
+        ".write": "auth != null && root.child('staff').child(auth.uid).exists()",
+        ".validate": "newData.isString() && (!data.exists() || data.val() === newData.val())"
+      }
+    },
+
+    "employees": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()",
+      "$employeeId": {
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "active": {
+          ".validate": "newData.isBoolean()"
+        },
+        "pin": {
+          ".validate": "newData.val() === null || (newData.isString() && newData.val().matches(/^[0-9]{4}$/))"
+        },
+        "createdAt": {
+          ".validate": "newData.isString()"
+        }
+      }
+    }
+  }
+}

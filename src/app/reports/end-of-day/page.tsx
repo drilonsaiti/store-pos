@@ -14,6 +14,7 @@ import {useSales} from '@/hooks/use-sales';
 import {useFormatCurrency} from '@/hooks/use-currency';
 import {buildEndOfDayReport, toDateKey} from '@/lib/utils/reports';
 import {formatDateTime} from '@/lib/utils/dates';
+import {getSaleNetTotal} from '@/lib/utils/refund';
 
 export default function EndOfDayReportPage() {
     const {data: sales, isLoading} = useSales();
@@ -116,7 +117,7 @@ export default function EndOfDayReportPage() {
                                             <TableCell>{formatDateTime(sale.date)}</TableCell>
                                             <TableCell>{sale.employeeName ?? 'Unassigned'}</TableCell>
                                             <TableCell
-                                                className="tabular text-right font-medium">{fmt(sale.totalPrice)}</TableCell>
+                                                className="tabular text-right font-medium">{fmt(getSaleNetTotal(sale))}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

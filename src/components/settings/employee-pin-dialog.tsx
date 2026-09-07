@@ -61,6 +61,10 @@ export function EmployeePinDialog({
                     <DialogTitle>Enter PIN for {employeeName}</DialogTitle>
                 </DialogHeader>
 
+                <p className="text-center text-xs text-muted-foreground">
+                    {'Identifies who\'s on the register for reporting — not a login.'}
+                </p>
+
                 <div className="flex justify-center gap-3 py-2">
                     {[0, 1, 2, 3].map((i) => (
                         <span

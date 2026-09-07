@@ -10,6 +10,7 @@ import {useFormatCurrency} from '@/hooks/use-currency';
 import {useProducts} from '@/hooks/use-products';
 import {useRefundSale} from '@/hooks/use-sales';
 import {getRefundedQuantity} from '@/lib/utils/refund';
+import {computeStockDeltas} from '@/lib/utils/stock';
 import type {Sale} from '@/types/sale';
 
 interface Props {
@@ -70,14 +71,10 @@ export function RefundDialog({sale, open, onOpenChange}: Props) {
                 ...(line.unitLabel ? {unitLabel: line.unitLabel} : {}),
             }));
 
-        const restock = refundLines
-            .map((l) => {
-                const product = products.find((p) => p.id === l.idProduct);
-                if (!product) return null; // deleted since the sale — refund still recorded, just can't restock
-                const quantityToAdd = l.mode === 'package' ? l.quantity * (product.packageOption?.piecesPerPackage ?? 1) : l.quantity;
-                return {productId: product.id, quantityToAdd};
-            })
-            .filter((x): x is { productId: string; quantityToAdd: number } => x !== null);
+        // Lines referencing a since-deleted product are skipped inside
+        // computeStockDeltas — the refund itself is still recorded, it just
+        // can't restock a product that no longer exists.
+        const stockDeltas = computeStockDeltas(refundLines, products, 1);
 
         await refundSale.mutateAsync({
             saleId: sale.id,
@@ -87,7 +84,7 @@ export function RefundDialog({sale, open, onOpenChange}: Props) {
                 amount: refundAmount,
                 ...(reason.trim() ? {reason: reason.trim()} : {}),
             },
-            restock,
+            stockDeltas,
         });
         reset();
         onOpenChange(false);

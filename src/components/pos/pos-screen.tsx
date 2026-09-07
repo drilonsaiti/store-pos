@@ -30,6 +30,7 @@ import {
     findProductByNameOrBarcode,
     normalizeBarcode,
 } from '@/lib/utils/barcode';
+import {computeStockDeltas} from '@/lib/utils/stock';
 import {matchesSearchQuery} from '@/lib/utils/search';
 import {playScanError, playScanSuccess} from '@/lib/utils/feedback';
 import {formatDateTime} from '@/lib/utils/dates';
@@ -49,7 +50,7 @@ const BarcodeScanner = dynamic(
         ssr: false,
         loading: () => (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-                <Skeleton className="h-14 w-14 rounded-full" />
+                <Skeleton className="h-14 w-14 rounded-full"/>
             </div>
         ),
     }
@@ -327,16 +328,28 @@ export function PosScreen() {
             })),
         };
 
+        const stockDeltas = computeStockDeltas(
+            items.map((item) => ({
+                idProduct: item.productId,
+                quantity: item.quantity,
+                mode: item.mode,
+            })),
+            products,
+            -1
+        );
+
         setIsCheckingOut(true);
+
+        let shouldResetCart = true;
 
         try {
             if (!isOnline) {
-                enqueueSale(sale);
+                enqueueSale(sale, stockDeltas);
                 toast.info(
                     'Saved offline — will sync automatically once back online'
                 );
             } else {
-                const created = await createSale.mutateAsync(sale);
+                const created = await createSale.mutateAsync({sale, stockDeltas});
 
                 toast.success('Sale completed', {
                     action: {
@@ -350,29 +363,51 @@ export function PosScreen() {
                 });
             }
         } catch (error) {
-            // Genuine failure while online — don't silently mask it as "saved offline".
             console.error('Sale failed', error);
 
-            enqueueSale(sale);
+            const code = (error as { code?: string })?.code;
+            const wasRejected = code === 'PERMISSION_DENIED';
 
-            toast.error(
-                'Could not save sale online — queued to retry automatically',
-                {
-                    description:
-                        error instanceof Error
-                            ? error.message
-                            : undefined,
-                }
-            );
+            if (wasRejected) {
+                // The server refused the write outright (most likely: a line
+                // would have taken a product's stock below zero, rejected by
+                // the quantity >= 0 rule). Retrying this offline later would
+                // just fail the same way every time — and since the offline
+                // queue stops at its first failed item, queuing a permanently
+                // -rejected sale would silently block every sale after it
+                // from ever syncing. So: don't queue it, don't clear the
+                // cart — let the cashier see it, adjust, and retry.
+                shouldResetCart = false;
+                toast.error(
+                    'Sale was rejected — check stock levels for the items in this cart, then try again.',
+                    {description: error instanceof Error ? error.message : undefined}
+                );
+            } else {
+                // Genuine connectivity failure — safe to queue for automatic retry.
+                enqueueSale(sale, stockDeltas);
+                toast.error(
+                    'Could not save sale online — queued to retry automatically',
+                    {
+                        description:
+                            error instanceof Error
+                                ? error.message
+                                : undefined,
+                    }
+                );
+            }
         } finally {
             setIsCheckingOut(false);
         }
 
-        clear();
-        setLastScannedId(null);
-        setCheckoutOpen(false);
+        if (shouldResetCart) {
+            clear();
+            setLastScannedId(null);
+            setCheckoutOpen(false);
+        }
+
         searchRef.current?.focus();
     };
+
 
     const handleHoldSale = (label: string) => {
         hold(items, label);
@@ -473,7 +508,7 @@ export function PosScreen() {
                             className="h-12 shrink-0"
                             onClick={openScanner}
                         >
-                            <ScanLine className="h-5 w-5" />
+                            <ScanLine className="h-5 w-5"/>
                             Scan barcode
                         </Button>
                     </div>
@@ -487,13 +522,13 @@ export function PosScreen() {
                             onClick={() => {
                                 setHoldSuggestedLabel(
                                     `Sale ${formatDateTime(
-    new Date().toISOString()
-)}`
+                                        new Date().toISOString()
+                                    )}`
                                 );
                                 setHoldDialogOpen(true);
                             }}
                         >
-                            <PauseCircle className="h-4 w-4" />
+                            <PauseCircle className="h-4 w-4"/>
                             Hold sale
                         </Button>
 
@@ -503,7 +538,7 @@ export function PosScreen() {
                             className="flex-1"
                             onClick={() => setHeldListOpen(true)}
                         >
-                            <PlayCircle className="h-4 w-4" />
+                            <PlayCircle className="h-4 w-4"/>
                             Held sales
 
                             {heldSales.length > 0 && (
@@ -547,12 +582,13 @@ export function PosScreen() {
                     </div>
 
                     <div className="px-4">
-                        <Cart />
+                        <Cart products={products}/>
                     </div>
                 </Card>
             </div>
 
-            <div className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:static lg:bottom-auto lg:h-fit lg:rounded-lg lg:border lg:shadow-sm">
+            <div
+                className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:static lg:bottom-auto lg:h-fit lg:rounded-lg lg:border lg:shadow-sm">
                 <div
                     className="mb-3 flex items-center justify-between"
                     aria-live="polite"
@@ -599,6 +635,7 @@ export function PosScreen() {
                     onOpenChange={setCheckoutOpen}
                     onConfirm={handleConfirmSale}
                     isSubmitting={isCheckingOut}
+                    products={products}
                 />
             )}
 
@@ -629,11 +666,11 @@ export function PosScreen() {
                     !open && setSpecialProduct(null)
                 }
                 onConfirm={({
-                    mode,
-                    quantity,
-                    unitPrice,
-                    unitLabel,
-                }) => {
+                                mode,
+                                quantity,
+                                unitPrice,
+                                unitLabel,
+                            }) => {
                     if (!specialProduct) return;
 
                     addLine({

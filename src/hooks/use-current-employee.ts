@@ -1,6 +1,6 @@
 'use client';
 
-import {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
+import {useCallback, useMemo, useSyncExternalStore} from 'react';
 
 export interface CurrentEmployee {
     id: string;
@@ -10,17 +10,14 @@ export interface CurrentEmployee {
 const STORAGE_KEY = 'store-console:current-employee';
 const CHANGE_EVENT = 'store-console:current-employee-changed';
 
-function readCurrentEmployee(): CurrentEmployee | null {
+function getSnapshot(): string | null {
     if (typeof window === 'undefined') return null;
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    try {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed.id === 'string' && typeof parsed.name === 'string') return parsed;
-        return null;
-    } catch {
-        return null;
-    }
+
+    return window.localStorage.getItem(STORAGE_KEY);
+}
+
+function getServerSnapshot(): null {
+    return null;
 }
 
 function subscribe(callback: () => void) {
@@ -33,28 +30,65 @@ function subscribe(callback: () => void) {
     };
 }
 
+function parseEmployee(raw: string | null): CurrentEmployee | null {
+    if (!raw) return null;
+
+    try {
+        const parsed: unknown = JSON.parse(raw);
+
+        if (
+            typeof parsed === 'object' &&
+            parsed !== null &&
+            'id' in parsed &&
+            'name' in parsed &&
+            typeof parsed.id === 'string' &&
+            typeof parsed.name === 'string'
+        ) {
+            return {
+                id: parsed.id,
+                name: parsed.name,
+            };
+        }
+    } catch {
+        // Ignore malformed localStorage data.
+    }
+
+    return null;
+}
+
 /**
  * Which employee is currently working the register, persisted locally per
- * device — a lightweight shift marker, not a login (Firebase Auth already
- * covers actual account access). Every sale gets tagged with whoever's
- * selected here, which is what the end-of-day report groups by.
+ * device. This is shift attribution only, not authentication.
  */
 export function useCurrentEmployee() {
-    const employee = useSyncExternalStore(
+    const rawEmployee = useSyncExternalStore(
         subscribe,
-        readCurrentEmployee,
-        () => null,
+        getSnapshot,
+        getServerSnapshot,
     );
 
-    const setEmployee = useCallback((employee: CurrentEmployee | null) => {
-        if (employee) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(employee));
-        } else {
-            localStorage.removeItem(STORAGE_KEY);
-        }
+    const employee = useMemo(
+        () => parseEmployee(rawEmployee),
+        [rawEmployee],
+    );
 
-        window.dispatchEvent(new Event(CHANGE_EVENT));
-    }, []);
+    const setEmployee = useCallback(
+        (employee: CurrentEmployee | null) => {
+            if (employee) {
+                window.localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(employee),
+                );
+            } else {
+                window.localStorage.removeItem(STORAGE_KEY);
+            }
+
+            // The native "storage" event does not fire in the same tab
+            // that made the change, so notify subscribers explicitly.
+            window.dispatchEvent(new Event(CHANGE_EVENT));
+        },
+        [],
+    );
 
     return {
         employee,

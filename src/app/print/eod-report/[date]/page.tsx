@@ -8,6 +8,7 @@ import {useCurrency} from '@/hooks/use-currency';
 import {formatCurrency} from '@/lib/utils/currency';
 import {formatDateTime} from '@/lib/utils/dates';
 import {buildEndOfDayReport} from '@/lib/utils/reports';
+import {getSaleNetTotal} from "@/lib/utils/refund";
 
 export default function EndOfDayReportPrintPage() {
     const {date} = useParams<{ date: string }>();
@@ -72,7 +73,7 @@ export default function EndOfDayReportPrintPage() {
                 <span className="flex-1">
                   #{sale.id.slice(-6).toUpperCase()} {formatDateTime(sale.date)}
                 </span>
-                                <span className="tabular shrink-0">{formatCurrency(sale.totalPrice, currency)}</span>
+                                <span className="tabular shrink-0">{formatCurrency(getSaleNetTotal(sale), currency)}</span>
                             </div>
                         ))}
                     </div>

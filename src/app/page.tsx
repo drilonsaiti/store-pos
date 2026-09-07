@@ -17,6 +17,7 @@ import {useLowStockThreshold} from '@/hooks/use-low-stock-threshold';
 import {formatDateTime, isToday} from '@/lib/utils/dates';
 import {getStockStatus} from '@/types/product';
 import {getDailyRevenue, getTopProducts} from '@/lib/utils/analytics';
+import {getSaleNetTotal} from "@/lib/utils/refund";
 
 const RevenueChart = dynamic(() => import('@/components/dashboard/revenue-chart').then((m) => m.RevenueChart), {
     ssr: false,
@@ -37,13 +38,14 @@ export default function DashboardPage() {
         const p = products ?? [];
         const s = sales ?? [];
         const todaySales = s.filter((sale) => isToday(sale.date));
+
         return {
             totalProducts: p.length,
             totalUnits: p.reduce((sum, x) => sum + x.quantity, 0),
             inventoryValue: p.reduce((sum, x) => sum + x.price * x.quantity, 0),
             lowStock: p.filter((x) => getStockStatus(x.quantity, threshold) !== 'in-stock'),
             todaySalesCount: todaySales.length,
-            todayRevenue: todaySales.reduce((sum, sale) => sum + sale.totalPrice, 0),
+            todayRevenue: todaySales.reduce((sum, sale) => sum + getSaleNetTotal(sale), 0),
             recentSales: s.slice(0, 5),
             dailyRevenue: getDailyRevenue(s),
             topProducts: getTopProducts(s),
@@ -121,7 +123,7 @@ export default function DashboardPage() {
                                     className="flex items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-secondary"
                                 >
                                     <span>{formatDateTime(sale.date)}</span>
-                                    <span className="tabular font-medium">{fmt(sale.totalPrice)}</span>
+                                    <span className="tabular font-medium">{fmt(getSaleNetTotal(sale))}</span>
                                 </Link>
                             ))}
                         </CardContent>

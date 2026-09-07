@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {parseProductsCsv, type ParseProductsCsvResult} from '@/lib/utils/csv';
-import {useBulkCreateProducts} from "@/hooks/use-products";
+import {useBulkCreateProducts, useProducts} from "@/hooks/use-products";
 
 interface Props {
     open: boolean;
@@ -24,6 +24,7 @@ export function ImportProductsDialog({open, onOpenChange}: Props) {
     const [result, setResult] = useState<ParseProductsCsvResult | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const bulkCreate = useBulkCreateProducts();
+    const {data: existingProducts} = useProducts();
 
     const reset = () => {
         setFileName(null);
@@ -34,9 +35,9 @@ export function ImportProductsDialog({open, onOpenChange}: Props) {
     const handleFile = async (file: File) => {
         setFileName(file.name);
         const text = await file.text();
-        setResult(parseProductsCsv(text));
+        const existingBarcodes = new Set((existingProducts ?? []).map((p) => p.barCode));
+        setResult(parseProductsCsv(text, existingBarcodes));
     };
-
     const handleImport = async () => {
         if (!result || result.rows.length === 0) return;
         await bulkCreate.mutateAsync(result.rows.map((r) => r.data));

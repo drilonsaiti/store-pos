@@ -63,7 +63,7 @@ export interface ParseProductsCsvResult {
  * to piece), weightUnit ("kg"/"g", defaults to kg), piecesPerPackage +
  * packagePrice (both required together to enable package pricing).
  */
-export function parseProductsCsv(text: string): ParseProductsCsvResult {
+export function parseProductsCsv(text: string, existingBarcodes: Set<string> = new Set()): ParseProductsCsvResult {
     const parsed = Papa.parse<Record<string, string>>(text, {
         header: true,
         skipEmptyLines: true,
@@ -72,6 +72,7 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
 
     const rows: ProductCsvRow[] = [];
     const errors: ProductCsvError[] = [];
+    const seenInFile = new Set<string>();
 
     parsed.data.forEach((raw, i) => {
         const rowNumber = i + 2;
@@ -89,6 +90,15 @@ export function parseProductsCsv(text: string): ParseProductsCsvResult {
             errors.push({row: rowNumber, message: 'Missing barcode'});
             return;
         }
+        if (seenInFile.has(barCode)) {
+            errors.push({row: rowNumber, message: `Duplicate barcode "${barCode}" (also used earlier in this file)`});
+            return;
+        }
+        if (existingBarcodes.has(barCode)) {
+            errors.push({row: rowNumber, message: `Barcode "${barCode}" already exists in your catalog`});
+            return;
+        }
+        seenInFile.add(barCode);
         if (!Number.isFinite(price) || price < 0) {
             errors.push({row: rowNumber, message: `Invalid price "${raw.price}"`});
             return;
@@ -175,6 +185,5 @@ export function salesToCsv(sales: Sale[]): string {
 }
 
 function csvSafe(value: string): string {
-    return /^[=+\-@]/.test(value) ? `'${value}` : value;
+    return /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
 }
-

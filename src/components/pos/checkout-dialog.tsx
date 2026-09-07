@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useCartStore } from '@/stores/cart-store';
-import { useFormatCurrency } from '@/hooks/use-currency';
-import { getQuickCashAmounts } from '@/lib/utils/cash';
+import {useState} from 'react';
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter} from '@/components/ui/dialog';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {useCartStore} from '@/stores/cart-store';
+import {useFormatCurrency} from '@/hooks/use-currency';
+import {getQuickCashAmounts} from '@/lib/utils/cash';
+import {isLineOversold} from "@/lib/utils/stock";
+import {Product} from "@/types/product";
+import {AlertTriangle} from "lucide-react";
 
 export interface PaymentInfo {
     amountReceived?: number;
@@ -19,13 +22,18 @@ interface Props {
     onOpenChange: (open: boolean) => void;
     onConfirm: (payment: PaymentInfo) => void;
     isSubmitting: boolean;
+    products: Product[];
 }
 
-export function CheckoutDialog({ open, onOpenChange, onConfirm, isSubmitting }: Props) {
+export function CheckoutDialog({open, onOpenChange, onConfirm, isSubmitting, products}: Props) {
     const items = useCartStore((s) => s.items);
     const total = useCartStore((s) => s.total());
     const totalQuantity = useCartStore((s) => s.totalQuantity());
     const fmt = useFormatCurrency();
+
+    const oversoldItems = items.filter((item) =>
+        isLineOversold({productId: item.productId, quantity: item.quantity, mode: item.mode}, products)
+    );
 
     const [cashInput, setCashInput] = useState('');
 
@@ -40,12 +48,14 @@ export function CheckoutDialog({ open, onOpenChange, onConfirm, isSubmitting }: 
         onConfirm(
             hasCashEntry
                 ? {
-                      amountReceived: Math.round(received! * 100) / 100,
-                      changeDue: changeDue ?? 0,
-                  }
+                    amountReceived: Math.round(received! * 100) / 100,
+                    changeDue: changeDue ?? 0,
+                }
                 : {}
         );
     };
+
+    const firstOversoldItem = oversoldItems[0];
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -70,6 +80,22 @@ export function CheckoutDialog({ open, onOpenChange, onConfirm, isSubmitting }: 
                         </div>
                     ))}
                 </div>
+
+                {oversoldItems.length > 0 && (
+                    <div
+                        className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-sm text-warning">
+                        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0"/>
+
+
+                        <span>
+    {oversoldItems.length === 1 && firstOversoldItem
+        ? `${firstOversoldItem.name} exceeds current stock — this will oversell.`
+        : `${oversoldItems.length} items exceed current stock — this will oversell.`}
+</span>
+                        ```
+
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-1 border-t pt-3 text-sm">
                     <div className="flex justify-between text-muted-foreground">

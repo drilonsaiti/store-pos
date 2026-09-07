@@ -47,6 +47,9 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function signUp(email: string, password: string) {
+    if (process.env.NEXT_PUBLIC_ALLOW_SIGNUP !== 'true') {
+        throw new Error('Sign-up is currently disabled.');
+    }
     const credential = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
     return credential.user;
 }

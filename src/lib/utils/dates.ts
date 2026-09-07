@@ -34,3 +34,16 @@ export function isToday(iso: string): boolean {
         date.getDate() === now.getDate()
     );
 }
+
+
+/** yyyy-mm-dd in LOCAL time. This is the canonical "which calendar day does
+ * this timestamp belong to" helper — every day-bucketing feature (dashboard
+ * revenue chart, top products, end-of-day report) keys off this, not a
+ * hand-rolled toISOString() slice, which is UTC and can silently disagree
+ * with this by a day near midnight for any store not in UTC. */
+export function toDateKey(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}

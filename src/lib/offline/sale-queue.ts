@@ -1,10 +1,12 @@
 import type {SaleInput} from '@/types/sale';
+import type {StockDelta} from '@/lib/utils/stock';
 
 const STORAGE_KEY = 'store-console:offline-sale-queue';
 
 export interface QueuedSale {
     localId: string;
     sale: SaleInput;
+    stockDeltas: StockDelta[];
     queuedAt: string;
 }
 
@@ -29,10 +31,11 @@ export function getQueuedSales(): QueuedSale[] {
 
 /** Saves a completed-but-unsynced sale locally. Called when the network is
  * down or a save attempt fails, so a cashier never loses a rung-up sale. */
-export function enqueueSale(sale: SaleInput): QueuedSale {
+export function enqueueSale(sale: SaleInput, stockDeltas: StockDelta[] = []): QueuedSale {
     const entry: QueuedSale = {
         localId: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
         sale,
+        stockDeltas,
         queuedAt: new Date().toISOString(),
     };
     const queue = read();
