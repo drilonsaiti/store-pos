@@ -28,7 +28,7 @@
     "@tanstack/react-query": "^5.56.2",
     "@tanstack/react-query-persist-client": "^5.101.4",
     "@undecaf/zbar-wasm": "^0.11.0",
-    "@zxing/browser": "^0.1.5",
+    "@zxing/browser": "^0.2.1",
     "@zxing/library": "^0.21.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
