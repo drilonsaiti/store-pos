@@ -6,7 +6,9 @@
 
 Built with Next.js, TypeScript, and Firebase — a complete rewrite of a legacy CRA/Redux/Quagga POS into a fast, mobile-first, installable web app.
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![CI](https://github.com/drilonsaiti/store-pos/actions/workflows/ci.yml/badge.svg)](https://github.com/drilonsaiti/store-pos/actions/workflows/ci.yml) 
+[![CodeQL](https://github.com/drilonsaiti/store-pos/actions/workflows/codeql.yml/badge.svg)](https://github.com/drilonsaiti/store-pos/actions/workflows/codeql.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.0-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime%20Database-ffca28?logo=firebase)](https://firebase.google.com/)
@@ -148,7 +150,7 @@ After someone signs up, they have **zero** access until you manually add their U
 npm run dev         # start the dev server
 npm run build        # production build
 npm run typecheck    # tsc --noEmit
-npm run lint          # next lint
+npm run lint          # eslint .
 npm test              # vitest run
 ```
 
