@@ -1,46 +1,68 @@
+<div align="center">
+
 # 🛒 Store Console
 
-**A modern, offline-capable point-of-sale and inventory system for small retail — built with Next.js, TypeScript, and Firebase.**
+**A modern, offline-capable point-of-sale and inventory system for small retail.**
 
-Store Console is a complete rewrite of a legacy Create React App / Redux POS system into a fast, mobile-first, installable web app. It keeps the same Firebase Realtime Database your data already lives in, but replaces the architecture, UI, and barcode-scanning experience end to end.
+Built with Next.js, TypeScript, and Firebase — a complete rewrite of a legacy CRA/Redux/Quagga POS into a fast, mobile-first, installable web app.
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Realtime%20Database-ffca28?logo=firebase)](https://firebase.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+[Features](#-features) • [Getting started](#-getting-started) • [Architecture](#-architecture) • [Contributing](#-contributing) • [Roadmap](#-roadmap)
+
+</div>
+
+---
+
+## Why Store Console
+
+Most small-store POS tools are either expensive SaaS subscriptions or clunky legacy software. Store Console is neither: it's a self-hostable, open-source point-of-sale you run on your own Firebase project, with the barcode-scanning speed, offline resilience, and receipt printing a real cashier needs — and none of the enterprise-retail bloat you don't.
+
+> **Note on data layer:** this app uses Firebase **Realtime Database**, not Firestore. If you're evaluating it for your stack, that distinction matters — see [Firebase setup](#firebase-setup) below.
 
 ---
 
 ## ✨ Features
 
 ### Point of sale
-- **Camera barcode scanning** — native `BarcodeDetector` API with a lazy-loaded ZXing fallback for browsers that don't support it (Safari/iOS). Frames are cropped and detected at high resolution for reliable reads on small or worn barcodes.
-- **Hardware USB/Bluetooth scanner support** — detected automatically via keystroke timing; never interferes with normal typing.
-- **Stays open across scans** — ring up an entire basket without reopening the scanner between items. A running total and last-scanned item stay visible the whole time.
-- **Sell by piece, weight, or package** — a product can be configured to sell by the piece, by weight (kg/g) with a price-per-unit, or as a discounted full package alongside individual pieces.
-- **Held / parked sales** — suspend the current cart to serve another customer, then resume it later.
-- **Unknown barcode?** Add the product on the spot, without leaving the sale.
-- **Offline-safe checkout** — no connection at the register? The sale is queued locally and synced automatically the moment connectivity returns, with no duplicate writes.
-- **Receipt printing** — a dedicated print view auto-opens the browser print dialog, formatted for narrow thermal-printer paper.
-- **Fuzzy, accent-insensitive search** — "eks 250" finds "Eks Pjeshkë 250 ml"; typing `e` still matches `ë`, and look-alike Cyrillic characters are normalized to Latin.
+- 📷 **Camera barcode scanning** — native `BarcodeDetector` API with a lazy-loaded [ZXing](https://github.com/zxing-js/library) fallback for Safari/iOS, plus a selectable [zbar-wasm](https://github.com/undecaf/zbar-wasm) engine for barcodes other engines struggle with. Frame cropping, digital zoom, and continuous autofocus specifically target small, worn, or curved-surface barcodes.
+- ⌨️ **Hardware USB/Bluetooth scanner support**, detected automatically via keystroke timing — no drivers, no configuration.
+- 🔄 **Scan-and-keep-scanning UX** — the camera stays open across an entire basket instead of closing after every item.
+- ⚖️ **Sell by piece, weight (kg/g), or package** — the same product can be priced per unit and per bulk package independently.
+- ⏸️ **Held / parked sales** — suspend a cart to serve another customer, resume it later.
+- 💵 **Cash received / change due**, calculated and printed on the receipt.
+- ❓ **Unknown barcode?** Add the product on the spot without leaving the sale.
+- 📴 **Offline-safe checkout** — a sale placed with no connection queues locally and syncs automatically, with no duplicate writes, the moment connectivity returns.
+- 🧾 **Receipt printing**, formatted for thermal-printer-width paper.
+- 🔍 **Fuzzy, accent- and script-insensitive search** — `pjeshke` finds `Pjeshkë`, and look-alike Cyrillic characters normalize to Latin.
 
 ### Inventory
-- Full product CRUD with barcodes always stored as text (leading zeroes are never lost).
+- Full product CRUD, with barcodes always stored as text — leading zeroes are never silently dropped.
+- **Restock by scan** — scan a product, enter how much arrived, it's added on top of current stock (never overwritten), with an undo log.
 - CSV import/export, including weight and package pricing columns.
-- Configurable low-stock threshold, reflected consistently across Products, POS, and the dashboard.
-- Search-by-scan on the products list.
+- Configurable low-stock threshold, reflected consistently everywhere stock status is shown.
+- Infinite-scroll product/sales lists with debounced search.
 
 ### Sales & reporting
-- Full sales history with search, date filtering, and infinite scroll.
-- **Refunds** — full or partial, per line item, with automatic stock restocking via atomic Firebase transactions.
+- Full sales history with search, date filtering, and CSV export.
+- **Refunds** — full or partial, per line item, with automatic stock restocking via atomic transactions.
 - **End-of-day report**, broken down by employee, with a printable summary.
-- CSV export of sales for accounting.
 
 ### Team
-- Manage employees and mark who's currently on the register from the top bar.
-- Optional **4-digit PIN** per employee so the wrong person can't be selected by mistake.
+- Manage employees, and select who's currently on the register from the top bar.
+- Optional 4-digit PIN per employee — a lightweight deterrent against attributing a sale to the wrong person (not intended as real account security; see [Security](#-security)).
 
-### Everything else
-- **Dashboard** with KPIs, a 14-day revenue chart, and a top-products chart (both lazy-loaded to keep initial load fast).
-- **Multi-currency** — EUR, USD, GBP, CHF, or ALL, chosen once in Settings and reflected everywhere money is shown.
-- **Authentication** via Firebase Auth, gating every screen.
-- **Installable PWA** with a minimal service worker for shell caching and offline resilience.
-- **Dark mode**, full keyboard shortcuts (`⌘K` search, `F4` scan, `⌘⏎` checkout), and accessibility basics (skip link, live regions, reduced-motion support, semantic nav).
+### Platform
+- 🔐 Authentication via Firebase Auth, gating every screen.
+- 💱 **Multi-currency** — pick a currency once in Settings, every displayed amount follows it.
+- 📊 Dashboard with KPIs, a 14-day revenue chart, and a top-products chart.
+- 📲 Installable PWA with offline shell caching.
+- 🌗 Dark mode, full keyboard shortcuts, and accessibility basics (skip link, live regions, reduced-motion support).
 
 ---
 
@@ -48,97 +70,124 @@ Store Console is a complete rewrite of a legacy Create React App / Redux POS sys
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js 16 (App Router) + TypeScript (strict) |
-| Styling | Tailwind CSS + local shadcn-style primitives |
-| Server state | TanStack Query, persisted to `localStorage` |
-| Client state | Zustand (cart), React Context (auth) |
-| Forms & validation | React Hook Form + Zod |
-| Data | Firebase Realtime Database + Firebase Authentication |
-| Barcode scanning | Native `BarcodeDetector` API, ZXing fallback |
-| Charts | Recharts (lazy-loaded) |
-| Testing | Vitest + Testing Library |
+| Framework | [Next.js 14](https://nextjs.org/) (App Router) + TypeScript (strict) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) + local shadcn/ui-style primitives |
+| Server state | [TanStack Query](https://tanstack.com/query), persisted to `localStorage` |
+| Client state | [Zustand](https://github.com/pmndrs/zustand) (cart), React Context (auth) |
+| Forms & validation | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) |
+| Data & auth | [Firebase Realtime Database](https://firebase.google.com/docs/database) + Firebase Authentication |
+| Barcode scanning | Native `BarcodeDetector`, [ZXing](https://github.com/zxing-js/library), [zbar-wasm](https://github.com/undecaf/zbar-wasm) |
+| Charts | [Recharts](https://recharts.org/) (lazy-loaded) |
+| Testing | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) |
 
 ---
 
 ## 🚀 Getting started
 
+### Prerequisites
+- Node.js 18+
+- A [Firebase](https://console.firebase.google.com/) project with **Realtime Database** and **Authentication** (Email/Password) enabled
+
+### Install
+
 ```bash
+git clone https://github.com/drilonsaiti/store-pos
+cd store-console
 npm install
-cp .env.local.example .env.local   # fill in your Firebase config, see below
+cp .env.local.example .env.local   # fill in your Firebase config — see below
 npm run dev                        # http://localhost:3000
-```
-
-Other scripts:
-
-```bash
-npm run typecheck   # tsc --noEmit
-npm run lint         # next lint
-npm test             # vitest run
-npm run build         # production build
 ```
 
 ### Firebase setup
 
-1. **Realtime Database** (not Firestore) — this app is built entirely on `firebase/database`. Create one in Firebase Console → Build → Realtime Database if you haven't already.
-2. **Authentication** — enable the Email/Password provider under Build → Authentication, then use the "Create one" link on `/login` to make your first account. Turn public sign-up back off once your team has accounts (see `src/app/login/page.tsx`).
+1. Firebase Console → Build → **Realtime Database** → Create Database (not Firestore).
+2. Firebase Console → Build → **Authentication** → enable the Email/Password provider.
 3. Copy your web app config into `.env.local`:
 
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
+   ```env
+   NEXT_PUBLIC_FIREBASE_API_KEY=
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+   NEXT_PUBLIC_FIREBASE_DATABASE_URL=
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+   NEXT_PUBLIC_FIREBASE_APP_ID=
+   ```
 
+4. Use the "Create one" link on `/login` to make your first account, then **lock down public sign-up** and apply the security rules below before going live.
 
-4. **Security rules** — tighten these once accounts exist, or the database stays publicly writable:
+### Security rules (required before production use)
+
+Firebase's client API key is not a secret, which means anyone can call the sign-up API directly against your project. Don't rely on `auth != null` alone — allowlist by UID:
 
 ```json
 {
   "rules": {
-    "products": { ".read": "auth != null", ".write": "auth != null" },
-    "sale":     { ".read": "auth != null", ".write": "auth != null" },
-    "employees": { ".read": "auth != null", ".write": "auth != null" }
+    "staff": { ".read": false, "$uid": { ".write": false } },
+    "products": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()"
+    },
+    "sale": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()"
+    },
+    "employees": {
+      ".read": "auth != null && root.child('staff').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('staff').child(auth.uid).exists()"
+    }
   }
 }
 ```
 
+After someone signs up, they have **zero** access until you manually add their UID under `staff/` in the Firebase Console.
+
+### Scripts
+
+```bash
+npm run dev         # start the dev server
+npm run build        # production build
+npm run typecheck    # tsc --noEmit
+npm run lint          # next lint
+npm test              # vitest run
+```
+
 ---
 
-## 🗂️ Project structure
+## 🗂️ Architecture
 
+```
 src/
-app/ routes: dashboard, products, sale, sales, settings,
-reports, print views, login
-components/
-ui/ local button/card/input/dialog/table primitives
-layout/ sidebar, mobile nav, topbar, offline banner
-pos/ the entire POS experience: cart, checkout,
-held sales, quick-add, weight/package picker
-scanner/ the camera scanner dialog
-products/ table, cards, form, import dialog
-sales/ sales table, refund dialog
-dashboard/ KPI cards, charts
-settings/ employee management, PIN entry
-auth/ auth provider + route guard
-pwa/ service worker registration
-hooks/ one hook per concern — products, sales, employees,
-cart-adjacent state, currency, threshold, offline
-queue, debouncing, infinite scroll, camera permission
-lib/
-firebase/ client.ts, products.ts, sales.ts, employees.ts,
-auth.ts — the ONLY place Firebase is ever called
-utils/ currency, dates, barcode, search (fuzzy matching),
-analytics, csv, feedback (sound/vibration)
-offline/ localStorage-backed offline sale queue
-pos/ held-sales storage
-validation/ Zod schemas
-stores/ cart-store.ts (Zustand)
-types/ Product, Sale, CartItem, Employee, ...
+  app/                  routes: dashboard, products, sale (POS), sales,
+                         settings, reports, print views, login
+  components/
+    ui/                 local button/card/input/dialog/table primitives
+    layout/              sidebar, mobile nav, topbar, offline banner
+    pos/                  cart, checkout, held sales, quick-add,
+                          weight/package picker
+    scanner/              camera scanner dialog + engine switching
+    products/             table, cards, form, import dialog, restock
+    sales/                sales table, refund dialog
+    dashboard/            KPI cards, charts
+    settings/             employee management, PIN entry
+    auth/                 auth provider + route guard
+  hooks/                 one hook per concern (products, sales, employees,
+                         currency, low-stock threshold, offline queue,
+                         debouncing, infinite scroll, camera permission)
+  lib/
+    firebase/             client.ts, products.ts, sales.ts, employees.ts,
+                          auth.ts — the ONLY place Firebase is ever called
+    scanner/               pluggable barcode-decode engines
+    utils/                  currency, dates, barcode, fuzzy search,
+                          analytics, csv, sound/vibration feedback
+    offline/               localStorage-backed offline sale queue
+    pos/                   held-sales storage
+    validation/             Zod schemas
+  stores/                 cart-store.ts (Zustand)
+  types/                  Product, Sale, CartItem, Employee, ...
+```
 
-
-Components never call Firebase directly — everything routes through `lib/firebase/*` via the hooks in `hooks/`.
+**Design principle:** components never call Firebase directly. Every read/write goes through `lib/firebase/*`, accessed via the hooks in `hooks/`. If you're looking for where a piece of data actually gets fetched or saved, start there.
 
 ---
 
@@ -148,32 +197,49 @@ Components never call Firebase directly — everything routes through `lib/fireb
 npm test
 ```
 
-Covers cart math (increment-on-rescan, weight amounts, package lines), barcode normalization (the leading-zero case specifically), currency arithmetic, CSV round-tripping, the offline sale queue, the low-stock threshold hook, and the hardware barcode scanner's keystroke-timing logic.
+Coverage focuses on the logic most worth protecting from regressions: cart math (increment-on-rescan, weight amounts, package lines), barcode normalization (the classic leading-zero bug, specifically), currency arithmetic, CSV round-tripping, the offline sale queue, the low-stock threshold hook, and hardware-scanner keystroke-timing detection.
 
 ---
 
 ## 📴 Offline behavior
 
-- A sale completed with no connection is saved to `localStorage` instead of failing, and syncs automatically — one item at a time, only removed from the queue after a confirmed write — the moment the browser comes back online.
-- Product and sale data is cached locally too, so the POS still has last-known inventory to look up against right after a reload with no connection.
-- A banner appears in the app shell whenever you're offline or a sync is in progress; it's silent otherwise.
+- A sale completed with no connection is saved to `localStorage` and synced automatically — one item at a time, removed from the queue only after a confirmed Firebase write — the moment the browser reconnects.
+- Product and sale data is cached locally too, so the POS still has last-known inventory to check against immediately after a reload with no connection.
+- A banner in the app shell shows offline/syncing state; it's silent otherwise.
 
 ---
 
-## 🔒 A few things worth knowing
+## 🔒 Security
 
-- **Employee selection is attribution, not authentication.** It tags a sale with whoever's picked in the topbar for reporting purposes. The optional PIN is a light deterrent against picking the wrong name, not real account security — anyone with database access can see it in plain text.
-- **Camera permission persistence is entirely the browser's job.** Once granted, Chrome/Edge/Firefox remember it forever for a fixed, secure origin. If it keeps re-prompting, you're likely testing at a changing address (a LAN IP, or mixing `localhost`/`127.0.0.1`) — deploy behind one fixed HTTPS domain to fix it for good.
-- **Held sales are device-local**, not synced to Firebase — they're mid-transaction scratch state, not committed sales, so a hold on the front register won't appear on another device.
-
----
-
-## 🗺️ Not yet built
-
-- Server-side pagination (Products/Sales currently fetch the full dataset once and paginate client-side — fine at small-to-medium store scale, but would need reworking for very large catalogs).
-- Cross-device held sales.
-- A full accessibility audit with a screen reader (current coverage is markup-level: semantic landmarks, live regions, focus management, reduced motion).
+- **Employee PIN selection is attribution, not authentication.** It tags a sale with whoever's picked in the top bar for reporting — the PIN discourages picking the wrong name, it does not protect against a determined bad actor with access to the browser.
+- **Camera permission persistence is entirely the browser's job**, scoped per fixed, secure origin — deploy behind one stable HTTPS domain, or Chrome/Firefox will treat every changed address as a new site and re-prompt.
+- Found a real vulnerability? Please open a private security advisory rather than a public issue — see [SECURITY.md](SECURITY.md).
 
 ---
 
-Built as an iterative rewrite of a legacy CRA/Redux/Quagga POS, preserving the original Firebase data model throughout.
+## 🗺️ Roadmap
+
+- [ ] Server-side pagination for very large catalogs (current implementation fetches the full product/sale list once, which is fine at small-to-medium store scale)
+- [ ] Cross-device held sales (currently device-local by design)
+- [ ] Full screen-reader audit (current coverage is markup-level: landmarks, live regions, focus management)
+- [ ] Invoice-photo-to-inventory import (OCR/vision-based line-item extraction) — designed, not yet implemented
+
+Have an idea? [Open an issue](../../issues) or start a [discussion](../../discussions).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, coding conventions, and how to submit a pull request. Please run `npm run typecheck`, `npm run lint`, and `npm test` before opening a PR.
+
+---
+
+## 📄 License
+
+Licensed under the [MIT License](LICENSE).
+
+---
+
+## 🙏 Acknowledgments
+
+Built as an iterative rewrite of a legacy Create React App + Redux + Quagga point-of-sale system, preserving the original Firebase data model throughout the migration.
