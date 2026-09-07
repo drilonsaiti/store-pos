@@ -6,13 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="62187cfc-a52a-4d58-9509-450e2c2b9bda" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/__tests__/cart-store.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/cart-store.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/__tests__/product.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/product.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/__tests__/use-hardware-barcode-scanner.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/use-hardware-barcode-scanner.test.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/__tests__/use-low-stock-threshold.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/use-low-stock-threshold.test.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vitest.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vitest.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +22,7 @@
         <option value="JavaScript File" />
         <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="GitHub Workflow" />
       </list>
     </option>
   </component>
@@ -78,61 +72,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="6.583176186308705E-4" />
-      <entry key="MS500" value="0.8422873053428418" />
-      <entry key="S2" value="3.8661899762747187" />
-      <entry key="S5" value="7.223845847517569" />
-      <entry key="S10" value="10.463651896686013" />
-      <entry key="S30" value="14.277061037507233" />
-      <entry key="S60" value="15.605019597221506" />
-      <entry key="M2" value="18.237467625406293" />
-      <entry key="M5" value="38.03985362306339" />
-      <entry key="M10" value="73.74153770021316" />
-      <entry key="M15" value="105.49750839790839" />
-      <entry key="M30" value="184.39226574423927" />
-      <entry key="H1" value="300.3239906145734" />
-      <entry key="H2" value="434.07153240144225" />
-      <entry key="H4" value="548.1833851416862" />
-      <entry key="D1" value="687.3810568519206" />
-      <entry key="W1" value="716.8899239775862" />
-    </decayedCancelled>
-    <decayedSelected>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
       <entry key="S2" value="1.0" />
       <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0000013089248532" />
-      <entry key="S60" value="1.0016239928027133" />
-      <entry key="M2" value="1.0603613919711268" />
-      <entry key="M5" value="1.6462415366448426" />
-      <entry key="M10" value="2.7171085165516082" />
-      <entry key="M15" value="3.6545492944532088" />
-      <entry key="M30" value="5.922525142510998" />
-      <entry key="H1" value="9.041961982530351" />
-      <entry key="H2" value="12.640714923117827" />
-      <entry key="H4" value="15.848758004028383" />
-      <entry key="D1" value="19.950439874484207" />
-      <entry key="W1" value="20.844388403816215" />
+      <entry key="S10" value="1.0000000130087079" />
+      <entry key="S30" value="1.026986910137346" />
+      <entry key="S60" value="2.0629378833629177" />
+      <entry key="M2" value="8.049137739076134" />
+      <entry key="M5" value="29.39612064272736" />
+      <entry key="M10" value="64.52945651592469" />
+      <entry key="M15" value="97.41054250317464" />
+      <entry key="M30" value="181.2784047112559" />
+      <entry key="H1" value="305.10169001349095" />
+      <entry key="H2" value="449.17179951278814" />
+      <entry key="H4" value="573.4626748147796" />
+      <entry key="D1" value="726.6568735192634" />
+      <entry key="W1" value="759.3344822665879" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="1.7750186478321232E-183" />
+      <entry key="S2" value="3.377944727907023E-46" />
+      <entry key="S5" value="9.814541450819985E-19" />
+      <entry key="S10" value="1.4359057902242165E-9" />
+      <entry key="S30" value="0.002109435456840039" />
+      <entry key="S60" value="0.0799384465636715" />
+      <entry key="M2" value="0.544533856620607" />
+      <entry key="M5" value="2.0773274919532" />
+      <entry key="M10" value="3.875566430737908" />
+      <entry key="M15" value="5.202828930700737" />
+      <entry key="M30" value="8.05938069277577" />
+      <entry key="H1" value="11.68710344790565" />
+      <entry key="H2" value="15.722800382584461" />
+      <entry key="H4" value="19.283021080027506" />
+      <entry key="D1" value="23.83338296912611" />
+      <entry key="W1" value="24.82695622057805" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.009917515449849507" />
-      <entry key="MS500" value="1.2276845370792104" />
-      <entry key="S2" value="4.648231811869779" />
-      <entry key="S5" value="8.114576540144318" />
-      <entry key="S10" value="11.394262743724367" />
-      <entry key="S30" value="15.246933038956211" />
-      <entry key="S60" value="16.59028268122859" />
-      <entry key="M2" value="19.289072978254328" />
-      <entry key="M5" value="39.68161226911258" />
-      <entry key="M10" value="76.45540795835288" />
-      <entry key="M15" value="109.14912720660158" />
-      <entry key="M30" value="190.3119072422191" />
-      <entry key="H1" value="309.36291754970284" />
-      <entry key="H2" value="446.7095356889989" />
-      <entry key="H4" value="564.0302012966503" />
-      <entry key="D1" value="707.3310428636488" />
-      <entry key="W1" value="737.7342434226064" />
+      <entry key="MS100" value="0.9395227492140118" />
+      <entry key="MS500" value="0.9876008614453725" />
+      <entry key="S2" value="0.9968856972203758" />
+      <entry key="S5" value="0.9987531130852756" />
+      <entry key="S10" value="0.9993763764809594" />
+      <entry key="S30" value="1.0288604800807664" />
+      <entry key="S60" value="2.142178997159185" />
+      <entry key="M2" value="8.59138702014935" />
+      <entry key="M5" value="31.469662637858377" />
+      <entry key="M10" value="68.40136276795297" />
+      <entry key="M15" value="102.60995296072478" />
+      <entry key="M30" value="189.33459080319403" />
+      <entry key="H1" value="316.7856048623395" />
+      <entry key="H2" value="464.8917876851987" />
+      <entry key="H4" value="592.7436786008725" />
+      <entry key="D1" value="750.4897820038785" />
+      <entry key="W1" value="784.1613662845091" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -154,6 +148,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Vitest.getQuickCashAmounts.does not suggest a round amount equal to an already-round total.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
@@ -182,7 +177,21 @@
       <recent name="C:\Users\Ardit\Downloads\store-next\src\app" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.Next.js: server-side">
+  <component name="RunManager" selected="Vitest.getQuickCashAmounts.does not suggest a round amount equal to an already-round total">
+    <configuration name="getQuickCashAmounts.does not suggest a round amount equal to an already-round total" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/src/lib/utils/__tests__/cash.test.ts" />
+      <test-names>
+        <test-name value="getQuickCashAmounts" />
+        <test-name value="does not suggest a round amount equal to an already-round total" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
     </configuration>
@@ -196,6 +205,11 @@
       <envs />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Vitest.getQuickCashAmounts.does not suggest a round amount equal to an already-round total" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -219,7 +233,7 @@
       <workItem from="1786523026875" duration="40000" />
       <workItem from="1786525373976" duration="3000" />
       <workItem from="1788727407095" duration="949000" />
-      <workItem from="1788770191295" duration="2547000" />
+      <workItem from="1788770191295" duration="3179000" />
     </task>
     <servers />
   </component>
