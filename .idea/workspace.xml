@@ -6,7 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="62187cfc-a52a-4d58-9509-450e2c2b9bda" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/__tests__/cart-store.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/cart-store.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/__tests__/product.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/product.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/__tests__/use-hardware-barcode-scanner.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/use-hardware-barcode-scanner.test.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/__tests__/use-low-stock-threshold.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/__tests__/use-low-stock-threshold.test.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vitest.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vitest.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,61 +78,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0020646780506188" />
-      <entry key="MS500" value="1.3428341765921497" />
-      <entry key="S2" value="2.4866719924934992" />
-      <entry key="S5" value="3.2280951153626165" />
-      <entry key="S10" value="3.5780838918681317" />
-      <entry key="S30" value="3.8706845739058484" />
-      <entry key="S60" value="4.9696848309044475" />
-      <entry key="M2" value="11.477745368082385" />
-      <entry key="M5" value="30.23429754249925" />
-      <entry key="M10" value="56.90807862468835" />
-      <entry key="M15" value="83.11088155573555" />
-      <entry key="M30" value="152.1747593670167" />
-      <entry key="H1" value="257.57272635124286" />
-      <entry key="H2" value="379.1226694358291" />
-      <entry key="H4" value="481.708632664124" />
-      <entry key="D1" value="605.4439271361966" />
-      <entry key="W1" value="631.494741479306" />
+      <entry key="MS100" value="6.583176186308705E-4" />
+      <entry key="MS500" value="0.8422873053428418" />
+      <entry key="S2" value="3.8661899762747187" />
+      <entry key="S5" value="7.223845847517569" />
+      <entry key="S10" value="10.463651896686013" />
+      <entry key="S30" value="14.277061037507233" />
+      <entry key="S60" value="15.605019597221506" />
+      <entry key="M2" value="18.237467625406293" />
+      <entry key="M5" value="38.03985362306339" />
+      <entry key="M10" value="73.74153770021316" />
+      <entry key="M15" value="105.49750839790839" />
+      <entry key="M30" value="184.39226574423927" />
+      <entry key="H1" value="300.3239906145734" />
+      <entry key="H2" value="434.07153240144225" />
+      <entry key="H4" value="548.1833851416862" />
+      <entry key="D1" value="687.3810568519206" />
+      <entry key="W1" value="716.8899239775862" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="8.243560029666167E-201" />
-      <entry key="S2" value="1.5717649112338419E-50" />
-      <entry key="S5" value="1.8133051802635893E-20" />
-      <entry key="S10" value="1.903851585354839E-10" />
-      <entry key="S30" value="9.13141892699304E-4" />
-      <entry key="S60" value="0.042734724535867775" />
-      <entry key="M2" value="0.2924398794756058" />
-      <entry key="M5" value="0.9698464591327272" />
-      <entry key="M10" value="1.7853191448831984" />
-      <entry key="M15" value="2.5467017114142965" />
-      <entry key="M30" value="4.4950017794997725" />
-      <entry key="H1" value="7.263336088096358" />
-      <entry key="H2" value="10.503889220292345" />
-      <entry key="H4" value="13.392864091524757" />
-      <entry key="D1" value="17.065031841353136" />
-      <entry key="W1" value="17.861501290392734" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0000013089248532" />
+      <entry key="S60" value="1.0016239928027133" />
+      <entry key="M2" value="1.0603613919711268" />
+      <entry key="M5" value="1.6462415366448426" />
+      <entry key="M10" value="2.7171085165516082" />
+      <entry key="M15" value="3.6545492944532088" />
+      <entry key="M30" value="5.922525142510998" />
+      <entry key="H1" value="9.041961982530351" />
+      <entry key="H2" value="12.640714923117827" />
+      <entry key="H4" value="15.848758004028383" />
+      <entry key="D1" value="19.950439874484207" />
+      <entry key="W1" value="20.844388403816215" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.961244690892177" />
-      <entry key="MS500" value="1.3312787548313885" />
-      <entry key="S2" value="2.4770067057502163" />
-      <entry key="S5" value="3.2216168061219217" />
-      <entry key="S10" value="3.5741635011603035" />
-      <entry key="S30" value="3.8700943890588833" />
-      <entry key="S60" value="5.011345020748904" />
-      <entry key="M2" value="11.76873459023363" />
-      <entry key="M5" value="31.202486909073144" />
-      <entry key="M10" value="58.69155944481616" />
-      <entry key="M15" value="85.65551554157142" />
-      <entry key="M30" value="156.66719745854115" />
-      <entry key="H1" value="264.8331384350575" />
-      <entry key="H2" value="389.62392236679335" />
-      <entry key="H4" value="495.09962015757145" />
-      <entry key="D1" value="622.5085249191748" />
-      <entry key="W1" value="649.3561769690554" />
+      <entry key="MS100" value="0.009917515449849507" />
+      <entry key="MS500" value="1.2276845370792104" />
+      <entry key="S2" value="4.648231811869779" />
+      <entry key="S5" value="8.114576540144318" />
+      <entry key="S10" value="11.394262743724367" />
+      <entry key="S30" value="15.246933038956211" />
+      <entry key="S60" value="16.59028268122859" />
+      <entry key="M2" value="19.289072978254328" />
+      <entry key="M5" value="39.68161226911258" />
+      <entry key="M10" value="76.45540795835288" />
+      <entry key="M15" value="109.14912720660158" />
+      <entry key="M30" value="190.3119072422191" />
+      <entry key="H1" value="309.36291754970284" />
+      <entry key="H2" value="446.7095356889989" />
+      <entry key="H4" value="564.0302012966503" />
+      <entry key="D1" value="707.3310428636488" />
+      <entry key="W1" value="737.7342434226064" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -168,7 +174,11 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Ardit\Downloads\store-next" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Ardit\Downloads\store-next\src\lib\utils\__tests__" />
       <recent name="C:\Users\Ardit\Downloads\store-next\src\app" />
     </key>
   </component>
@@ -209,7 +219,7 @@
       <workItem from="1786523026875" duration="40000" />
       <workItem from="1786525373976" duration="3000" />
       <workItem from="1788727407095" duration="949000" />
-      <workItem from="1788770191295" duration="1769000" />
+      <workItem from="1788770191295" duration="2547000" />
     </task>
     <servers />
   </component>
