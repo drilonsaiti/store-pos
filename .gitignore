@@ -1,6 +1,30 @@
-node_modules
-.next
-.env.local
-.DS_Store
-*.tsbuildinfo
+```gitignore
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment variables
 .env
+.env.local
+.env.*.local
+
+# Build / TypeScript
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# OS
+.DS_Store
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Vercel
+.vercel/
+```
