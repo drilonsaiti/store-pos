@@ -32,7 +32,7 @@ import {formatDateTime} from '@/lib/utils/dates';
 import type {Product} from '@/types/product';
 import type {HeldSale} from '@/types/held-sale';
 import {toast} from 'sonner';
-import type { PaymentInfo } from './checkout-dialog';
+import type {PaymentInfo} from './checkout-dialog';
 // Camera scanner is code-split and only fetched once the user actually taps
 // "Scan barcode" — most transactions may never need it (manual search /
 // hardware scanner also add to cart), so it shouldn't cost every POS load.
@@ -166,6 +166,7 @@ export function PosScreen() {
     useEffect(() => {
         if (scannerOpen) return;
         if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setScanFeedback(null);
     }, [scannerOpen]);
 
@@ -210,10 +211,10 @@ export function PosScreen() {
             ...(currentEmployee?.id ? {employeeId: currentEmployee.id} : {}),
             ...(currentEmployee?.name ? {employeeName: currentEmployee.name} : {}),
             ...(payment.amountReceived !== undefined
-                ? { amountReceived: payment.amountReceived }
+                ? {amountReceived: payment.amountReceived}
                 : {}),
             ...(payment.changeDue !== undefined
-                ? { changeDue: payment.changeDue }
+                ? {changeDue: payment.changeDue}
                 : {}),
             products: items.map((item) => ({
                 idProduct: item.productId,
@@ -409,12 +410,14 @@ export function PosScreen() {
                 />
             )}
 
-            <CheckoutDialog
-                open={checkoutOpen}
-                onOpenChange={setCheckoutOpen}
-                onConfirm={handleConfirmSale}
-                isSubmitting={isCheckingOut}
-            />
+            {checkoutOpen &&
+                <CheckoutDialog
+                    open={checkoutOpen}
+                    onOpenChange={setCheckoutOpen}
+                    onConfirm={handleConfirmSale}
+                    isSubmitting={isCheckingOut}
+                />
+            }
 
             <QuickAddProductDialog
                 open={quickAddOpen}

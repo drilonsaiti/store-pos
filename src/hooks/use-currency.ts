@@ -17,6 +17,7 @@ export function useCurrency() {
     const [currency, setCurrencyState] = useState<CurrencyCode>(DEFAULT_CURRENCY);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrencyState(readCurrency());
         const onChange = () => setCurrencyState(readCurrency());
         window.addEventListener('store-console:currency-changed', onChange);

@@ -34,10 +34,12 @@ const CAMERA_STATUS_LABEL: Record<string, string> = {
 export default function SettingsPage() {
     const {theme, setTheme} = useTheme();
     const [mounted, setMounted] = useState(false);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => setMounted(true), []);
 
     const {threshold, setThreshold} = useLowStockThreshold();
     const [draft, setDraft] = useState<string>(String(threshold));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => setDraft(String(threshold)), [threshold]);
 
     const {currency, setCurrency} = useCurrency();
