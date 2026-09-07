@@ -25,24 +25,31 @@ import {useHeldSales} from '@/hooks/use-held-sales';
 import {enqueueSale} from '@/lib/offline/sale-queue';
 import {useCartStore} from '@/stores/cart-store';
 import {useHardwareBarcodeScanner} from '@/hooks/use-hardware-barcode-scanner';
-import {findProductByBarcode, findProductByNameOrBarcode, normalizeBarcode} from '@/lib/utils/barcode';
+import {
+    findProductByBarcode,
+    findProductByNameOrBarcode,
+    normalizeBarcode,
+} from '@/lib/utils/barcode';
 import {matchesSearchQuery} from '@/lib/utils/search';
 import {playScanError, playScanSuccess} from '@/lib/utils/feedback';
 import {formatDateTime} from '@/lib/utils/dates';
 import type {Product} from '@/types/product';
 import type {HeldSale} from '@/types/held-sale';
 import {toast} from 'sonner';
-import type {PaymentInfo} from './checkout-dialog';
+
 // Camera scanner is code-split and only fetched once the user actually taps
 // "Scan barcode" — most transactions may never need it (manual search /
 // hardware scanner also add to cart), so it shouldn't cost every POS load.
 const BarcodeScanner = dynamic(
-    () => import('@/components/scanner/barcode-scanner').then((m) => m.BarcodeScanner),
+    () =>
+        import('@/components/scanner/barcode-scanner').then(
+            (m) => m.BarcodeScanner
+        ),
     {
         ssr: false,
         loading: () => (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-                <Skeleton className="h-14 w-14 rounded-full"/>
+                <Skeleton className="h-14 w-14 rounded-full" />
             </div>
         ),
     }
@@ -51,36 +58,57 @@ const BarcodeScanner = dynamic(
 export function PosScreen() {
     const {data: products = []} = useProducts();
     const barcodeIndex = useBarcodeIndex();
-    const {items, addProduct, addLine, loadItems, clear, total, totalQuantity} = useCartStore();
+    const {
+        items,
+        addProduct,
+        addLine,
+        loadItems,
+        clear,
+        total,
+        totalQuantity,
+    } = useCartStore();
     const createSale = useCreateSale();
     const isOnline = useOnlineStatus();
     const fmt = useFormatCurrency();
     const {employee: currentEmployee} = useCurrentEmployee();
     const {heldSales, hold, remove: removeHeld} = useHeldSales();
 
+    const [holdSuggestedLabel, setHoldSuggestedLabel] = useState('');
+
     const [inputValue, setInputValue] = useState('');
     const [scannerOpen, setScannerOpen] = useState(false);
     const [scannerMounted, setScannerMounted] = useState(false);
+
     const openScanner = useCallback(() => {
         setScannerMounted(true);
         setScannerOpen(true);
     }, []);
+
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [notFoundCode, setNotFoundCode] = useState<string | null>(null);
     const [quickAddOpen, setQuickAddOpen] = useState(false);
     const [specialProduct, setSpecialProduct] = useState<Product | null>(null);
-    const [scanFeedback, setScanFeedback] = useState<ScanFeedback | null>(null);
+    const [scanFeedback, setScanFeedback] =
+        useState<ScanFeedback | null>(null);
     const [lastScannedId, setLastScannedId] = useState<string | null>(null);
     const [holdDialogOpen, setHoldDialogOpen] = useState(false);
     const [heldListOpen, setHeldListOpen] = useState(false);
+
     const searchRef = useRef<HTMLInputElement>(null);
-    const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const feedbackTimeoutRef =
+        useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const suggestions = useMemo(() => {
         const q = inputValue.trim();
+
         if (!q) return [];
+
         return products
-            .filter((p) => matchesSearchQuery(p.name, q) || normalizeBarcode(p.barCode).includes(normalizeBarcode(q)))
+            .filter(
+                (p) =>
+                    matchesSearchQuery(p.name, q) ||
+                    normalizeBarcode(p.barCode).includes(normalizeBarcode(q))
+            )
             .slice(0, 6);
     }, [inputValue, products]);
 
@@ -104,6 +132,7 @@ export function PosScreen() {
                 setNotFoundCode(null);
                 return;
             }
+
             addToCart(product);
         },
         [addToCart]
@@ -112,6 +141,7 @@ export function PosScreen() {
     const handleBarcode = useCallback(
         (barcode: string) => {
             const product = findProductByBarcode(barcodeIndex, barcode);
+
             if (product) {
                 handleProductSelected(product);
             } else {
@@ -124,8 +154,13 @@ export function PosScreen() {
 
     const handleManualSubmit = useCallback(() => {
         const value = inputValue.trim();
+
         if (!value) return;
-        const product = findProductByBarcode(barcodeIndex, value) ?? findProductByNameOrBarcode(products, value);
+
+        const product =
+            findProductByBarcode(barcodeIndex, value) ??
+            findProductByNameOrBarcode(products, value);
+
         if (product) {
             handleProductSelected(product);
         } else {
@@ -135,81 +170,142 @@ export function PosScreen() {
     }, [inputValue, barcodeIndex, products, handleProductSelected]);
 
     const showScanFeedback = useCallback((fb: ScanFeedback) => {
-        if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+        if (feedbackTimeoutRef.current) {
+            clearTimeout(feedbackTimeoutRef.current);
+        }
+
         setScanFeedback(fb);
-        feedbackTimeoutRef.current = setTimeout(() => setScanFeedback(null), 1600);
+
+        feedbackTimeoutRef.current = setTimeout(
+            () => setScanFeedback(null),
+            1600
+        );
+    }, []);
+
+    const closeScanner = useCallback(() => {
+        if (feedbackTimeoutRef.current) {
+            clearTimeout(feedbackTimeoutRef.current);
+            feedbackTimeoutRef.current = null;
+        }
+
+        setScanFeedback(null);
+        setScannerOpen(false);
     }, []);
 
     const handleCameraDetect = useCallback(
         (barcode: string) => {
             const product = findProductByBarcode(barcodeIndex, barcode);
+
             if (product) {
-                if (product.saleUnit === 'weight' || product.packageOption) {
-                    setScannerOpen(false);
+                if (
+                    product.saleUnit === 'weight' ||
+                    product.packageOption
+                ) {
+                    closeScanner();
                     setSpecialProduct(product);
                     return;
                 }
+
                 addProduct(product);
                 playScanSuccess();
                 setLastScannedId(product.id);
-                showScanFeedback({type: 'success', message: `${product.name} added`});
+                showScanFeedback({
+                    type: 'success',
+                    message: `${product.name} added`,
+                });
             } else {
                 playScanError();
+
                 const code = normalizeBarcode(barcode);
                 setNotFoundCode(code);
-                showScanFeedback({type: 'error', message: `Not found: ${code}`});
+
+                showScanFeedback({
+                    type: 'error',
+                    message: `Not found: ${code}`,
+                });
             }
         },
-        [barcodeIndex, addProduct, showScanFeedback]
+        [barcodeIndex, addProduct, showScanFeedback, closeScanner]
     );
 
-    useEffect(() => {
-        if (scannerOpen) return;
-        if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setScanFeedback(null);
-    }, [scannerOpen]);
+    useEffect(
+        () => () => {
+            if (feedbackTimeoutRef.current) {
+                clearTimeout(feedbackTimeoutRef.current);
+            }
+        },
+        []
+    );
 
-    useEffect(() => () => {
-        if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
-    }, []);
+    const anyModalOpen =
+        scannerOpen ||
+        checkoutOpen ||
+        quickAddOpen ||
+        Boolean(specialProduct) ||
+        holdDialogOpen ||
+        heldListOpen;
 
-    const anyModalOpen = scannerOpen || checkoutOpen || quickAddOpen || Boolean(specialProduct) || holdDialogOpen || heldListOpen;
-    useHardwareBarcodeScanner({onScan: handleBarcode, enabled: !anyModalOpen});
+    useHardwareBarcodeScanner({
+        onScan: handleBarcode,
+        enabled: !anyModalOpen,
+    });
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement | null;
-            const isTyping = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+            const isTyping =
+                target &&
+                (target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA');
 
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            if (
+                (e.metaKey || e.ctrlKey) &&
+                e.key.toLowerCase() === 'k'
+            ) {
                 e.preventDefault();
                 searchRef.current?.focus();
                 return;
             }
+
             if (e.key === 'F4' && !scannerOpen) {
                 e.preventDefault();
                 openScanner();
                 return;
             }
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !isTyping && items.length > 0) {
+
+            if (
+                (e.metaKey || e.ctrlKey) &&
+                e.key === 'Enter' &&
+                !isTyping &&
+                items.length > 0
+            ) {
                 e.preventDefault();
                 setCheckoutOpen(true);
             }
         };
+
         document.addEventListener('keydown', onKeyDown);
-        return () => document.removeEventListener('keydown', onKeyDown);
+
+        return () =>
+            document.removeEventListener('keydown', onKeyDown);
     }, [scannerOpen, items.length, openScanner]);
 
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const handleConfirmSale = async (payment: { amountReceived?: number; changeDue?: number }) => {
+    const handleConfirmSale = async (payment: {
+        amountReceived?: number;
+        changeDue?: number;
+    }) => {
         const sale = {
             date: new Date().toISOString(),
             totalPrice: total(),
             totalQuantity: totalQuantity(),
-            ...(currentEmployee?.id ? {employeeId: currentEmployee.id} : {}),
-            ...(currentEmployee?.name ? {employeeName: currentEmployee.name} : {}),
+            ...(currentEmployee?.id
+                ? {employeeId: currentEmployee.id}
+                : {}),
+            ...(currentEmployee?.name
+                ? {employeeName: currentEmployee.name}
+                : {}),
             ...(payment.amountReceived !== undefined
                 ? {amountReceived: payment.amountReceived}
                 : {}),
@@ -225,31 +321,49 @@ export function PosScreen() {
                 quantity: item.quantity,
                 date: new Date().toISOString(),
                 mode: item.mode,
-                ...(item.unitLabel ? {unitLabel: item.unitLabel} : {}),
+                ...(item.unitLabel
+                    ? {unitLabel: item.unitLabel}
+                    : {}),
             })),
         };
 
         setIsCheckingOut(true);
+
         try {
             if (!isOnline) {
                 enqueueSale(sale);
-                toast.info('Saved offline — will sync automatically once back online');
+                toast.info(
+                    'Saved offline — will sync automatically once back online'
+                );
             } else {
                 const created = await createSale.mutateAsync(sale);
+
                 toast.success('Sale completed', {
                     action: {
                         label: 'Print receipt',
-                        onClick: () => window.open(`/print/receipt/${created.id}`, '_blank'),
+                        onClick: () =>
+                            window.open(
+                                `/print/receipt/${created.id}`,
+                                '_blank'
+                            ),
                     },
                 });
             }
         } catch (error) {
             // Genuine failure while online — don't silently mask it as "saved offline".
             console.error('Sale failed', error);
+
             enqueueSale(sale);
-            toast.error('Could not save sale online — queued to retry automatically', {
-                description: error instanceof Error ? error.message : undefined,
-            });
+
+            toast.error(
+                'Could not save sale online — queued to retry automatically',
+                {
+                    description:
+                        error instanceof Error
+                            ? error.message
+                            : undefined,
+                }
+            );
         } finally {
             setIsCheckingOut(false);
         }
@@ -264,7 +378,11 @@ export function PosScreen() {
         hold(items, label);
         clear();
         setLastScannedId(null);
-        toast.success('Sale held', {description: label});
+
+        toast.success('Sale held', {
+            description: label,
+        });
+
         searchRef.current?.focus();
     };
 
@@ -273,12 +391,20 @@ export function PosScreen() {
             // Park the current cart too rather than silently discarding it —
             // a cashier resuming one held sale shouldn't lose whatever's already
             // in progress.
-            hold(items, `Auto-held ${formatDateTime(new Date().toISOString())}`);
+            hold(
+                items,
+                `Auto-held ${formatDateTime(new Date().toISOString())}`
+            );
         }
+
         loadItems(saved.items);
         removeHeld(saved.id);
         setHeldListOpen(false);
-        toast.success('Sale resumed', {description: saved.label});
+
+        toast.success('Sale resumed', {
+            description: saved.label,
+        });
+
         searchRef.current?.focus();
     };
 
@@ -292,9 +418,13 @@ export function PosScreen() {
                                 ref={searchRef}
                                 autoFocus
                                 value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                onChange={(e) =>
+                                    setInputValue(e.target.value)
+                                }
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') handleManualSubmit();
+                                    if (e.key === 'Enter') {
+                                        handleManualSubmit();
+                                    }
                                 }}
                                 placeholder="Scan or search product / barcode"
                                 className="h-12 text-base"
@@ -304,6 +434,7 @@ export function PosScreen() {
                                 aria-controls="pos-search-suggestions"
                                 autoComplete="off"
                             />
+
                             {suggestions.length > 0 && (
                                 <div
                                     id="pos-search-suggestions"
@@ -316,20 +447,33 @@ export function PosScreen() {
                                             type="button"
                                             role="option"
                                             aria-selected={false}
-                                            onClick={() => handleProductSelected(p)}
-                                            className="flex w-full min-h-11 items-center justify-between px-3 py-2 text-left text-sm hover:bg-secondary"
+                                            onClick={() =>
+                                                handleProductSelected(p)
+                                            }
+                                            className="flex min-h-11 w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-secondary"
                                         >
-                      <span>
-                        {p.name} <span className="tabular text-muted-foreground">· {p.barCode}</span>
-                      </span>
-                                            <span className="tabular text-muted-foreground">{fmt(p.price)}</span>
+                                            <span>
+                                                {p.name}{' '}
+                                                <span className="tabular text-muted-foreground">
+                                                    · {p.barCode}
+                                                </span>
+                                            </span>
+
+                                            <span className="tabular text-muted-foreground">
+                                                {fmt(p.price)}
+                                            </span>
                                         </button>
                                     ))}
                                 </div>
                             )}
                         </div>
-                        <Button size="lg" className="h-12 shrink-0" onClick={openScanner}>
-                            <ScanLine className="h-5 w-5"/>
+
+                        <Button
+                            size="lg"
+                            className="h-12 shrink-0"
+                            onClick={openScanner}
+                        >
+                            <ScanLine className="h-5 w-5" />
                             Scan barcode
                         </Button>
                     </div>
@@ -340,16 +484,33 @@ export function PosScreen() {
                             size="sm"
                             className="flex-1"
                             disabled={items.length === 0}
-                            onClick={() => setHoldDialogOpen(true)}
+                            onClick={() => {
+                                setHoldSuggestedLabel(
+                                    `Sale ${formatDateTime(
+    new Date().toISOString()
+)}`
+                                );
+                                setHoldDialogOpen(true);
+                            }}
                         >
-                            <PauseCircle className="h-4 w-4"/>
+                            <PauseCircle className="h-4 w-4" />
                             Hold sale
                         </Button>
-                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setHeldListOpen(true)}>
-                            <PlayCircle className="h-4 w-4"/>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => setHeldListOpen(true)}
+                        >
+                            <PlayCircle className="h-4 w-4" />
                             Held sales
+
                             {heldSales.length > 0 && (
-                                <Badge variant="secondary" className="ml-1">
+                                <Badge
+                                    variant="secondary"
+                                    className="ml-1"
+                                >
                                     {heldSales.length}
                                 </Badge>
                             )}
@@ -376,24 +537,40 @@ export function PosScreen() {
                 <Card className="flex-1">
                     <div className="flex items-center justify-between border-b px-4 py-3">
                         <h2 className="font-medium">Cart</h2>
-                        <span className="tabular text-sm text-muted-foreground" aria-live="polite">
-              {totalQuantity()} items
-            </span>
+
+                        <span
+                            className="tabular text-sm text-muted-foreground"
+                            aria-live="polite"
+                        >
+                            {totalQuantity()} items
+                        </span>
                     </div>
+
                     <div className="px-4">
-                        <Cart/>
+                        <Cart />
                     </div>
                 </Card>
             </div>
 
-            <div
-                className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:static lg:bottom-auto lg:h-fit lg:rounded-lg lg:border lg:shadow-sm">
-                <div className="mb-3 flex items-center justify-between" aria-live="polite" aria-atomic="true">
+            <div className="safe-bottom fixed inset-x-0 bottom-16 z-30 border-t bg-card p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:static lg:bottom-auto lg:h-fit lg:rounded-lg lg:border lg:shadow-sm">
+                <div
+                    className="mb-3 flex items-center justify-between"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
                     <span className="text-muted-foreground">Total</span>
-                    <span className="tabular text-2xl font-semibold">{fmt(total())}</span>
+
+                    <span className="tabular text-2xl font-semibold">
+                        {fmt(total())}
+                    </span>
                 </div>
-                <Button size="lg" className="h-12 w-full" disabled={items.length === 0}
-                        onClick={() => setCheckoutOpen(true)}>
+
+                <Button
+                    size="lg"
+                    className="h-12 w-full"
+                    disabled={items.length === 0}
+                    onClick={() => setCheckoutOpen(true)}
+                >
                     Complete sale
                 </Button>
             </div>
@@ -401,7 +578,13 @@ export function PosScreen() {
             {scannerMounted && (
                 <BarcodeScanner
                     open={scannerOpen}
-                    onOpenChange={setScannerOpen}
+                    onOpenChange={(open) => {
+                        if (open) {
+                            setScannerOpen(true);
+                        } else {
+                            closeScanner();
+                        }
+                    }}
                     onDetect={handleCameraDetect}
                     feedback={scanFeedback}
                     cartCount={totalQuantity()}
@@ -410,20 +593,25 @@ export function PosScreen() {
                 />
             )}
 
-            {checkoutOpen &&
+            {checkoutOpen && (
                 <CheckoutDialog
                     open={checkoutOpen}
                     onOpenChange={setCheckoutOpen}
                     onConfirm={handleConfirmSale}
                     isSubmitting={isCheckingOut}
                 />
-            }
+            )}
+
 
             <QuickAddProductDialog
+                key={quickAddOpen ? `quick-add-${notFoundCode}` : 'quick-add-closed'}
                 open={quickAddOpen}
                 onOpenChange={(open) => {
                     setQuickAddOpen(open);
-                    if (!open) setNotFoundCode(null);
+
+                    if (!open) {
+                        setNotFoundCode(null);
+                    }
                 }}
                 barcode={notFoundCode ?? ''}
                 onCreated={(product) => {
@@ -433,11 +621,21 @@ export function PosScreen() {
                 }}
             />
 
+
             <AddSpecialItemDialog
+                key={specialProduct?.id ?? 'none'}
                 product={specialProduct}
-                onOpenChange={(open) => !open && setSpecialProduct(null)}
-                onConfirm={({mode, quantity, unitPrice, unitLabel}) => {
+                onOpenChange={(open) =>
+                    !open && setSpecialProduct(null)
+                }
+                onConfirm={({
+                    mode,
+                    quantity,
+                    unitPrice,
+                    unitLabel,
+                }) => {
                     if (!specialProduct) return;
+
                     addLine({
                         product: specialProduct,
                         mode,
@@ -445,15 +643,21 @@ export function PosScreen() {
                         unitPrice,
                         ...(unitLabel ? {unitLabel} : {}),
                     });
+
                     playScanSuccess();
                 }}
             />
 
             <HoldSaleDialog
+                key={
+                    holdDialogOpen
+                        ? `hold-${holdSuggestedLabel}`
+                        : 'hold-closed'
+                }
                 open={holdDialogOpen}
                 onOpenChange={setHoldDialogOpen}
                 onConfirm={handleHoldSale}
-                suggestedLabel={`Sale ${formatDateTime(new Date().toISOString())}`}
+                suggestedLabel={holdSuggestedLabel}
             />
 
             <HeldSalesListDialog

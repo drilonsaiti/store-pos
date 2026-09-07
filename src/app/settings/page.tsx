@@ -1,9 +1,15 @@
 'use client';
 
+import {useSyncExternalStore, useState} from 'react';
 import {useTheme} from 'next-themes';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {AppShell} from '@/components/layout/app-shell';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
@@ -15,8 +21,8 @@ import {SUPPORTED_CURRENCIES} from '@/lib/utils/currency';
 import {useCameraPermission} from '@/hooks/use-camera-permission';
 import Link from 'next/link';
 import {FileBarChart, UsersRound} from 'lucide-react';
-import { useScannerEnginePreference } from '@/hooks/use-scanner-engine-preference';
-import { SCANNER_ENGINE_OPTIONS } from '@/lib/scanner/registry';
+import {useScannerEnginePreference} from '@/hooks/use-scanner-engine-preference';
+import {SCANNER_ENGINE_OPTIONS} from '@/lib/scanner/registry';
 
 const THEMES = [
     {value: 'light', label: 'Light'},
@@ -28,23 +34,30 @@ const CAMERA_STATUS_LABEL: Record<string, string> = {
     granted: 'Granted — camera scanning will not ask again on this device',
     denied: 'Blocked — re-enable camera access for this site in browser settings',
     prompt: 'Not yet granted — you will be asked the first time you scan',
-    unknown: 'Cannot be checked on this browser — Safari does not support querying it in advance',
+    unknown:
+        'Cannot be checked on this browser — Safari does not support querying it in advance',
 };
 
 export default function SettingsPage() {
     const {theme, setTheme} = useTheme();
-    const [mounted, setMounted] = useState(false);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    useEffect(() => setMounted(true), []);
+
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false,
+    );
 
     const {threshold, setThreshold} = useLowStockThreshold();
-    const [draft, setDraft] = useState<string>(String(threshold));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    useEffect(() => setDraft(String(threshold)), [threshold]);
+
+    const [draft, setDraft] = useState(() => String(threshold));
+
 
     const {currency, setCurrency} = useCurrency();
     const cameraPermission = useCameraPermission();
-    const { engine: scannerEngine, setEngine: setScannerEngine } = useScannerEnginePreference();
+    const {
+        engine: scannerEngine,
+        setEngine: setScannerEngine,
+    } = useScannerEnginePreference();
 
     return (
         <AppShell title="Settings">
@@ -53,12 +66,18 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Appearance</CardTitle>
                     </CardHeader>
+
                     <CardContent className="flex gap-2 pt-0">
                         {THEMES.map((t) => (
                             <Button
                                 key={t.value}
                                 variant="outline"
-                                className={cn('flex-1', mounted && theme === t.value && 'border-primary text-primary')}
+                                className={cn(
+                                    'flex-1',
+                                    mounted &&
+                                        theme === t.value &&
+                                        'border-primary text-primary'
+                                )}
                                 onClick={() => setTheme(t.value)}
                             >
                                 {t.label}
@@ -71,12 +90,16 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Currency</CardTitle>
                     </CardHeader>
+
                     <CardContent className="flex flex-wrap gap-2 pt-0">
                         {SUPPORTED_CURRENCIES.map((code) => (
                             <Button
                                 key={code}
                                 variant="outline"
-                                className={cn(currency === code && 'border-primary text-primary')}
+                                className={cn(
+                                    currency === code &&
+                                        'border-primary text-primary'
+                                )}
                                 onClick={() => setCurrency(code)}
                             >
                                 {code}
@@ -89,8 +112,12 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Inventory</CardTitle>
                     </CardHeader>
+
                     <CardContent className="flex flex-col gap-2 pt-0">
-                        <Label htmlFor="low-stock-threshold">Low-stock threshold (units)</Label>
+                        <Label htmlFor="low-stock-threshold">
+                            Low-stock threshold (units)
+                        </Label>
+
                         <div className="flex gap-2">
                             <Input
                                 id="low-stock-threshold"
@@ -101,16 +128,24 @@ export default function SettingsPage() {
                                 onChange={(e) => setDraft(e.target.value)}
                                 className="max-w-[120px]"
                             />
+
                             <Button
                                 variant="outline"
-                                onClick={() => setThreshold(Number(draft))}
-                                disabled={Number(draft) === threshold || draft.trim() === ''}
+                                onClick={() =>
+                                    setThreshold(Number(draft))
+                                }
+                                disabled={
+                                    Number(draft) === threshold ||
+                                    draft.trim() === ''
+                                }
                             >
                                 Save
                             </Button>
                         </div>
+
                         <p className="text-xs text-muted-foreground">
-                            Products at or below this quantity show as &quot;Low stock&quot; across Products, the POS,
+                            Products at or below this quantity show as
+                            &quot;Low stock&quot; across Products, the POS,
                             and the dashboard.
                         </p>
                     </CardContent>
@@ -120,23 +155,36 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Camera access</CardTitle>
                     </CardHeader>
+
                     <CardContent className="flex flex-col gap-2 pt-0">
                         <div className="flex items-center gap-2">
                             <Badge
-                                variant={cameraPermission === 'granted' ? 'success' : cameraPermission === 'denied' ? 'destructive' : 'secondary'}>
+                                variant={
+                                    cameraPermission === 'granted'
+                                        ? 'success'
+                                        : cameraPermission === 'denied'
+                                          ? 'destructive'
+                                          : 'secondary'
+                                }
+                            >
                                 {cameraPermission}
                             </Badge>
-                            <span
-                                className="text-sm text-muted-foreground">{CAMERA_STATUS_LABEL[cameraPermission]}</span>
+
+                            <span className="text-sm text-muted-foreground">
+                                {CAMERA_STATUS_LABEL[cameraPermission]}
+                            </span>
                         </div>
+
                         <p className="text-xs text-muted-foreground">
-                            Once granted, the browser remembers this for the site automatically — it will not ask again
-                            on the same
-                            device, as long as the store is always opened at the same web address. Opening it from a
-                            different or
-                            changing address (e.g. a LAN IP instead of a fixed domain) is treated as a different site
-                            and will ask
-                            again; this is a browser security rule, not something the app controls.
+                            Once granted, the browser remembers this for the
+                            site automatically — it will not ask again on the
+                            same device, as long as the store is always opened
+                            at the same web address. Opening it from a
+                            different or changing address (e.g. a LAN IP
+                            instead of a fixed domain) is treated as a
+                            different site and will ask again; this is a
+                            browser security rule, not something the app
+                            controls.
                         </p>
                     </CardContent>
                 </Card>
@@ -145,23 +193,33 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Barcode scanner engine</CardTitle>
                     </CardHeader>
+
                     <CardContent className="flex flex-col gap-2 pt-0">
                         {SCANNER_ENGINE_OPTIONS.map((opt) => (
-                            <label key={opt.id} className="flex items-center gap-2 text-sm">
+                            <label
+                                key={opt.id}
+                                className="flex items-center gap-2 text-sm"
+                            >
                                 <input
                                     type="radio"
                                     name="scanner-engine"
                                     checked={scannerEngine === opt.id}
-                                    onChange={() => setScannerEngine(opt.id)}
+                                    onChange={() =>
+                                        setScannerEngine(opt.id)
+                                    }
                                     className="h-4 w-4"
                                 />
                                 {opt.label}
                             </label>
                         ))}
+
                         <p className="mt-1 text-xs text-muted-foreground">
-                            No engine fixes distortion from a curved product surface — this changes which decode algorithm
-                            is used, which sometimes reads a barcode another engine misses (and sometimes the reverse). Try
-                            a different one if scans are unreliable on a specific product.
+                            No engine fixes distortion from a curved product
+                            surface — this changes which decode algorithm is
+                            used, which sometimes reads a barcode another
+                            engine misses (and sometimes the reverse). Try a
+                            different one if scans are unreliable on a
+                            specific product.
                         </p>
                     </CardContent>
                 </Card>
@@ -170,10 +228,15 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Team</CardTitle>
                     </CardHeader>
+
                     <CardContent className="pt-0">
-                        <Button asChild variant="outline" className="w-full justify-start">
+                        <Button
+                            asChild
+                            variant="outline"
+                            className="w-full justify-start"
+                        >
                             <Link href="/settings/employees">
-                                <UsersRound className="h-4 w-4"/>
+                                <UsersRound className="h-4 w-4" />
                                 Manage employees
                             </Link>
                         </Button>
@@ -184,10 +247,15 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Reports</CardTitle>
                     </CardHeader>
+
                     <CardContent className="pt-0">
-                        <Button asChild variant="outline" className="w-full justify-start">
+                        <Button
+                            asChild
+                            variant="outline"
+                            className="w-full justify-start"
+                        >
                             <Link href="/reports/end-of-day">
-                                <FileBarChart className="h-4 w-4"/>
+                                <FileBarChart className="h-4 w-4" />
                                 End of day report
                             </Link>
                         </Button>

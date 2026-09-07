@@ -1,22 +1,29 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useSyncExternalStore} from 'react';
 
-/** Tracks browser connectivity via the online/offline events, SSR-safe. */
-export function useOnlineStatus(): boolean {
-    const [isOnline, setIsOnline] = useState(true);
+function subscribe(callback: () => void) {
+    window.addEventListener('online', callback);
+    window.addEventListener('offline', callback);
 
-    useEffect(() => {
-        setIsOnline(navigator.onLine);
-        const goOnline = () => setIsOnline(true);
-        const goOffline = () => setIsOnline(false);
-        window.addEventListener('online', goOnline);
-        window.addEventListener('offline', goOffline);
-        return () => {
-            window.removeEventListener('online', goOnline);
-            window.removeEventListener('offline', goOffline);
-        };
-    }, []);
+    return () => {
+        window.removeEventListener('online', callback);
+        window.removeEventListener('offline', callback);
+    };
+}
 
-    return isOnline;
+function getSnapshot() {
+    return navigator.onLine;
+}
+
+function getServerSnapshot() {
+    return true;
+}
+
+export function useOnlineStatus() {
+    return useSyncExternalStore(
+        subscribe,
+        getSnapshot,
+        getServerSnapshot,
+    );
 }

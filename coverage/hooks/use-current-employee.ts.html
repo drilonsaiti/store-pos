@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/28</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
@@ -114,7 +114,18 @@
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -123,6 +134,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -139,35 +151,45 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >'use client';</span>
 &nbsp;
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
 &nbsp;
 export interface CurrentEmployee {
     id: string;
@@ -175,6 +197,7 @@ export interface CurrentEmployee {
 }
 &nbsp;
 const STORAGE_KEY = <span class="cstat-no" title="statement not covered" >'store-console:current-employee';</span>
+const CHANGE_EVENT = <span class="cstat-no" title="statement not covered" >'store-console:current-employee-changed';</span>
 &nbsp;
 function <span class="fstat-no" title="function not covered" >readCurrentEmployee(): CurrentEmployee | null {</span>
 <span class="cstat-no" title="statement not covered" >    if (typeof window === 'undefined') <span class="cstat-no" title="statement not covered" >return null;</span></span>
@@ -189,6 +212,16 @@ function <span class="fstat-no" title="function not covered" >readCurrentEmploye
     }
 }
 &nbsp;
+function <span class="fstat-no" title="function not covered" >subscribe(c</span>allback: () =&gt; void) {
+<span class="cstat-no" title="statement not covered" >    window.addEventListener(CHANGE_EVENT, callback);</span>
+<span class="cstat-no" title="statement not covered" >    window.addEventListener('storage', callback);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >    return () =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >        window.removeEventListener(CHANGE_EVENT, callback);</span>
+<span class="cstat-no" title="statement not covered" >        window.removeEventListener('storage', callback);</span>
+    };
+}
+&nbsp;
 /**
  * Which employee is currently working the register, persisted locally per
  * device — a lightweight shift marker, not a login (Firebase Auth already
@@ -196,26 +229,26 @@ function <span class="fstat-no" title="function not covered" >readCurrentEmploye
  * selected here, which is what the end-of-day report groups by.
  */
 export function <span class="fstat-no" title="function not covered" >useCurrentEmployee() {</span>
-    const [employee, setEmployeeState] = <span class="cstat-no" title="statement not covered" >useState&lt;CurrentEmployee | null&gt;(null);</span>
+    const employee = <span class="cstat-no" title="statement not covered" >useSyncExternalStore(</span>
+        subscribe,
+<span class="fstat-no" title="function not covered" >        readCurrentEmployee,</span>
+        () =&gt; <span class="cstat-no" title="statement not covered" >null,</span>
+    );
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >    useEffect(() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        setEmployeeState(readCurrentEmployee());</span>
-        const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >onChange = () =&gt; <span class="cstat-no" title="statement not covered" >s</span>etEmployeeState(readCurrentEmployee());</span></span>
-<span class="cstat-no" title="statement not covered" >        window.addEventListener('store-console:current-employee-changed', onChange);</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        return () =&gt; <span class="cstat-no" title="statement not covered" >w</span>indow.removeEventListener('store-console:current-employee-changed', onChange);</span></span>
-    }, []);
-&nbsp;
-    const setEmployee = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback((n</span>ext: CurrentEmployee | null) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (next) {</span>
-<span class="cstat-no" title="statement not covered" >            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));</span>
+    const setEmployee = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback((e</span>mployee: CurrentEmployee | null) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (employee) {</span>
+<span class="cstat-no" title="statement not covered" >            localStorage.setItem(STORAGE_KEY, JSON.stringify(employee));</span>
         } else {
-<span class="cstat-no" title="statement not covered" >            window.localStorage.removeItem(STORAGE_KEY);</span>
+<span class="cstat-no" title="statement not covered" >            localStorage.removeItem(STORAGE_KEY);</span>
         }
-<span class="cstat-no" title="statement not covered" >        window.dispatchEvent(new Event('store-console:current-employee-changed'));</span>
-<span class="cstat-no" title="statement not covered" >        setEmployeeState(next);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        window.dispatchEvent(new Event(CHANGE_EVENT));</span>
     }, []);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return {employee, setEmployee};</span>
+<span class="cstat-no" title="statement not covered" >    return {</span>
+        employee,
+        setEmployee,
+    };
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -223,7 +256,7 @@ export function <span class="fstat-no" title="function not covered" >useCurrentE
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-07T09:23:48.773Z
+                at 2026-09-07T10:46:09.895Z
             </div>
         <script src="../prettify.js"></script>
         <script>

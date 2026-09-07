@@ -1,42 +1,56 @@
 'use client';
 
-import {useCallback, useEffect, useState} from 'react';
-import {type CurrencyCode, formatCurrency, SUPPORTED_CURRENCIES} from '@/lib/utils/currency';
+import {useCallback, useSyncExternalStore} from 'react';
+import {
+    type CurrencyCode,
+    formatCurrency,
+    SUPPORTED_CURRENCIES,
+} from '@/lib/utils/currency';
 
 const STORAGE_KEY = 'store-console:currency';
+const CHANGE_EVENT = 'store-console:currency-changed';
 const DEFAULT_CURRENCY: CurrencyCode = 'EUR';
 
 function readCurrency(): CurrencyCode {
     if (typeof window === 'undefined') return DEFAULT_CURRENCY;
+
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return (SUPPORTED_CURRENCIES as readonly string[]).includes(raw ?? '') ? (raw as CurrencyCode) : DEFAULT_CURRENCY;
+
+    return (SUPPORTED_CURRENCIES as readonly string[]).includes(raw ?? '')
+        ? (raw as CurrencyCode)
+        : DEFAULT_CURRENCY;
 }
 
-/** Store-wide currency setting, editable from Settings, shared across tabs. */
-export function useCurrency() {
-    const [currency, setCurrencyState] = useState<CurrencyCode>(DEFAULT_CURRENCY);
+function subscribe(callback: () => void) {
+    window.addEventListener(CHANGE_EVENT, callback);
+    window.addEventListener('storage', callback);
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setCurrencyState(readCurrency());
-        const onChange = () => setCurrencyState(readCurrency());
-        window.addEventListener('store-console:currency-changed', onChange);
-        return () => window.removeEventListener('store-console:currency-changed', onChange);
-    }, []);
+    return () => {
+        window.removeEventListener(CHANGE_EVENT, callback);
+        window.removeEventListener('storage', callback);
+    };
+}
+
+export function useCurrency() {
+    const currency = useSyncExternalStore(
+        subscribe,
+        readCurrency,
+        () => DEFAULT_CURRENCY,
+    );
 
     const setCurrency = useCallback((next: CurrencyCode) => {
         window.localStorage.setItem(STORAGE_KEY, next);
-        window.dispatchEvent(new Event('store-console:currency-changed'));
-        setCurrencyState(next);
+        window.dispatchEvent(new Event(CHANGE_EVENT));
     }, []);
 
     return {currency, setCurrency};
 }
 
-/** Returns a formatter bound to the current currency setting — prefer this
- * in components over calling formatCurrency() directly, so displayed
- * amounts follow whatever currency was chosen in Settings. */
 export function useFormatCurrency() {
     const {currency} = useCurrency();
-    return useCallback((value: number) => formatCurrency(value, currency), [currency]);
+
+    return useCallback(
+        (value: number) => formatCurrency(value, currency),
+        [currency],
+    );
 }

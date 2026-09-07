@@ -103,7 +103,7 @@ export default function EmployeesPage() {
                 </div>
             </div>
 
-            <EmployeeFormDialog open={formOpen} onOpenChange={setFormOpen} employee={editing}/>
+            <EmployeeFormDialog key={formOpen ? editing?.id ?? 'new' : 'closed'} open={formOpen} onOpenChange={setFormOpen} employee={editing}/>
             <ConfirmDialog
                 open={Boolean(pendingDelete)}
                 onOpenChange={(open) => !open && setPendingDelete(null)}

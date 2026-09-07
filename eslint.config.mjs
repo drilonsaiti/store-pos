@@ -1,4 +1,5 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
+
+import {defineConfig, globalIgnores} from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 
 const eslintConfig = defineConfig([
@@ -7,6 +8,7 @@ const eslintConfig = defineConfig([
         '.next/**',
         'out/**',
         'build/**',
+        'coverage/**',
         'next-env.d.ts',
     ]),
 ]);

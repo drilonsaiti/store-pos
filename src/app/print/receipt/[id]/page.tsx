@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useParams} from 'next/navigation';
 import {useSale} from '@/hooks/use-sales';
 import {formatDateTime} from '@/lib/utils/dates';
@@ -15,15 +15,19 @@ export default function ReceiptPrintPage() {
     const {id} = useParams<{ id: string }>();
     const {data: sale, isLoading} = useSale(id);
     const {currency} = useCurrency();
-    const [autoPrinted, setAutoPrinted] = useState(false);
+    const autoPrintedRef = useRef(false);
 
     useEffect(() => {
-        if (sale && !autoPrinted) {
-            setAutoPrinted(true);
-            const t = setTimeout(() => window.print(), 300);
-            return () => clearTimeout(t);
-        }
-    }, [sale, autoPrinted]);
+        if (!sale || autoPrintedRef.current) return;
+
+        autoPrintedRef.current = true;
+
+        const t = window.setTimeout(() => {
+            window.print();
+        }, 300);
+
+        return () => window.clearTimeout(t);
+    }, [sale]);
 
     return (
         <RequireAuth>

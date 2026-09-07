@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -16,18 +16,18 @@ interface Props {
 export function HoldSaleDialog({open, onOpenChange, onConfirm, suggestedLabel}: Props) {
     const [label, setLabel] = useState(suggestedLabel);
 
-    useEffect(() => {
-        if (open) setLabel(suggestedLabel);
-    }, [open, suggestedLabel]);
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Hold this sale</DialogTitle>
                 </DialogHeader>
+
                 <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="hold-label">Label (helps you find it again)</Label>
+                    <Label htmlFor="hold-label">
+                        Label (helps you find it again)
+                    </Label>
+
                     <Input
                         id="hold-label"
                         autoFocus
@@ -41,10 +41,15 @@ export function HoldSaleDialog({open, onOpenChange, onConfirm, suggestedLabel}: 
                         }}
                     />
                 </div>
+
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                    >
                         Cancel
                     </Button>
+
                     <Button
                         onClick={() => {
                             onConfirm(label.trim() || suggestedLabel);

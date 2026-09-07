@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import type { Product } from '@/types/product';
+import {useState} from 'react';
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter} from '@/components/ui/dialog';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import type {Product} from '@/types/product';
 
 interface Props {
     product: Product | null;
@@ -15,14 +15,13 @@ interface Props {
 
 const QUICK_PIECE_AMOUNTS = [1, 5, 10, 24];
 
-export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Props) {
-    const [amount, setAmount] = useState('');
-
-    useEffect(() => {
-        setAmount(product?.saleUnit === 'weight' ? '' : '1');
-    }, [product]);
+export function RestockQuantityDialog({product, onOpenChange, onConfirm}: Props) {
+    const [amount, setAmount] = useState(
+        product?.saleUnit === 'weight' ? '' : '1'
+    );
 
     if (!product) return null;
+
     const isWeight = product.saleUnit === 'weight';
     const parsed = Number(amount);
     const isValid = Number.isFinite(parsed) && parsed > 0;
@@ -38,14 +37,18 @@ export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Prop
                 <DialogHeader>
                     <DialogTitle>{product.name}</DialogTitle>
                 </DialogHeader>
+
                 <p className="tabular text-sm text-muted-foreground">
-                    Current stock: {product.quantity} {isWeight ? (product.weightUnit ?? 'kg') : 'pcs'}
+                    Current stock: {product.quantity}{' '}
+                    {isWeight ? (product.weightUnit ?? 'kg') : 'pcs'}
                 </p>
 
                 <div className="flex flex-col gap-1.5">
                     <Label htmlFor="restock-amount">
-                        Amount to add {isWeight ? `(${product.weightUnit ?? 'kg'})` : ''}
+                        Amount to add{' '}
+                        {isWeight ? `(${product.weightUnit ?? 'kg'})` : ''}
                     </Label>
+
                     <Input
                         id="restock-amount"
                         type="number"
@@ -55,7 +58,9 @@ export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Prop
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' && isValid) confirm();
+                            if (e.key === 'Enter' && isValid) {
+                                confirm();
+                            }
                         }}
                     />
                 </div>
@@ -63,7 +68,13 @@ export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Prop
                 {!isWeight && (
                     <div className="flex flex-wrap gap-2">
                         {QUICK_PIECE_AMOUNTS.map((n) => (
-                            <Button key={n} type="button" variant="outline" size="sm" onClick={() => setAmount(String(n))}>
+                            <Button
+                                key={n}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setAmount(String(n))}
+                            >
                                 +{n}
                             </Button>
                         ))}
@@ -72,14 +83,20 @@ export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Prop
 
                 {isValid && (
                     <p className="tabular text-sm text-muted-foreground">
-                        New total: {Math.round((product.quantity + parsed) * 1000) / 1000} {isWeight ? (product.weightUnit ?? 'kg') : 'pcs'}
+                        New total:{' '}
+                        {Math.round((product.quantity + parsed) * 1000) / 1000}{' '}
+                        {isWeight ? (product.weightUnit ?? 'kg') : 'pcs'}
                     </p>
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                    >
                         Cancel
                     </Button>
+
                     <Button disabled={!isValid} onClick={confirm}>
                         Add stock
                     </Button>
@@ -88,3 +105,4 @@ export function RestockQuantityDialog({ product, onOpenChange, onConfirm }: Prop
         </Dialog>
     );
 }
+

@@ -57,19 +57,17 @@ export function EmployeePicker() {
             </DropdownMenu>
 
             <EmployeePinDialog
-                open={Boolean(pinTarget)}
-                employeeName={pinTarget?.name ?? ''}
-                onOpenChange={(open) => !open && setPinTarget(null)}
+                key={pinTarget?.id ?? 'none'} open={Boolean(pinTarget)}
+                employeeName={pinTarget?.name ?? ''} onOpenChange={(open) => !open && setPinTarget(null)}
                 onSubmit={(pin) => {
                     if (!pinTarget) return false;
                     const correct = pin === pinTarget.pin;
                     if (correct) {
-                        setEmployee({id: pinTarget.id, name: pinTarget.name});
+                        setEmployee({id: pinTarget.id, name: pinTarget.name,});
                         setPinTarget(null);
                     }
                     return correct;
-                }}
-            />
+                }}/>
         </>
     );
 }

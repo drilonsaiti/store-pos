@@ -1,6 +1,6 @@
 'use client';
 
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
 
 export interface CurrentEmployee {
     id: string;
@@ -8,6 +8,7 @@ export interface CurrentEmployee {
 }
 
 const STORAGE_KEY = 'store-console:current-employee';
+const CHANGE_EVENT = 'store-console:current-employee-changed';
 
 function readCurrentEmployee(): CurrentEmployee | null {
     if (typeof window === 'undefined') return null;
@@ -22,6 +23,16 @@ function readCurrentEmployee(): CurrentEmployee | null {
     }
 }
 
+function subscribe(callback: () => void) {
+    window.addEventListener(CHANGE_EVENT, callback);
+    window.addEventListener('storage', callback);
+
+    return () => {
+        window.removeEventListener(CHANGE_EVENT, callback);
+        window.removeEventListener('storage', callback);
+    };
+}
+
 /**
  * Which employee is currently working the register, persisted locally per
  * device — a lightweight shift marker, not a login (Firebase Auth already
@@ -29,24 +40,24 @@ function readCurrentEmployee(): CurrentEmployee | null {
  * selected here, which is what the end-of-day report groups by.
  */
 export function useCurrentEmployee() {
-    const [employee, setEmployeeState] = useState<CurrentEmployee | null>(null);
+    const employee = useSyncExternalStore(
+        subscribe,
+        readCurrentEmployee,
+        () => null,
+    );
 
-    useEffect(() => {
-        setEmployeeState(readCurrentEmployee());
-        const onChange = () => setEmployeeState(readCurrentEmployee());
-        window.addEventListener('store-console:current-employee-changed', onChange);
-        return () => window.removeEventListener('store-console:current-employee-changed', onChange);
-    }, []);
-
-    const setEmployee = useCallback((next: CurrentEmployee | null) => {
-        if (next) {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    const setEmployee = useCallback((employee: CurrentEmployee | null) => {
+        if (employee) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(employee));
         } else {
-            window.localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(STORAGE_KEY);
         }
-        window.dispatchEvent(new Event('store-console:current-employee-changed'));
-        setEmployeeState(next);
+
+        window.dispatchEvent(new Event(CHANGE_EVENT));
     }, []);
 
-    return {employee, setEmployee};
+    return {
+        employee,
+        setEmployee,
+    };
 }

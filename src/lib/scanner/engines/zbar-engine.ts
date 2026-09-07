@@ -1,7 +1,6 @@
-import {ScannerEngine} from "@/types/scanner";
+import {ScannerEngine} from '@/types/scanner';
 
 export function createZbarEngine(): ScannerEngine {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let zbarModule: any = null;
     let ctx: CanvasRenderingContext2D | null = null;
     let scratchCanvas: HTMLCanvasElement | null = null;

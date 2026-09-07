@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {useParams} from 'next/navigation';
 import {RequireAuth} from '@/components/auth/require-auth';
 import {useSales} from '@/hooks/use-sales';
@@ -13,20 +13,25 @@ export default function EndOfDayReportPrintPage() {
     const {date} = useParams<{ date: string }>();
     const {data: sales, isLoading} = useSales();
     const {currency} = useCurrency();
-    const [autoPrinted, setAutoPrinted] = useState(false);
+    const autoPrintedRef = useRef(false);
 
     const report = useMemo(() => {
         const [y, m, d] = date.split('-').map(Number);
         return buildEndOfDayReport(sales ?? [], new Date(y ?? 2000, (m ?? 1) - 1, d ?? 1));
     }, [sales, date]);
 
+
     useEffect(() => {
-        if (!isLoading && !autoPrinted) {
-            setAutoPrinted(true);
-            const t = setTimeout(() => window.print(), 300);
-            return () => clearTimeout(t);
-        }
-    }, [isLoading, autoPrinted]);
+        if (isLoading || autoPrintedRef.current) return;
+
+        autoPrintedRef.current = true;
+
+        const t = window.setTimeout(() => {
+            window.print();
+        }, 300);
+
+        return () => window.clearTimeout(t);
+    }, [isLoading]);
 
     return (
         <RequireAuth>
