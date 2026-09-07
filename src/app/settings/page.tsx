@@ -15,6 +15,8 @@ import {SUPPORTED_CURRENCIES} from '@/lib/utils/currency';
 import {useCameraPermission} from '@/hooks/use-camera-permission';
 import Link from 'next/link';
 import {FileBarChart, UsersRound} from 'lucide-react';
+import { useScannerEnginePreference } from '@/hooks/use-scanner-engine-preference';
+import { SCANNER_ENGINE_OPTIONS } from '@/lib/scanner/registry';
 
 const THEMES = [
     {value: 'light', label: 'Light'},
@@ -40,6 +42,7 @@ export default function SettingsPage() {
 
     const {currency, setCurrency} = useCurrency();
     const cameraPermission = useCameraPermission();
+    const { engine: scannerEngine, setEngine: setScannerEngine } = useScannerEnginePreference();
 
     return (
         <AppShell title="Settings">
@@ -132,6 +135,31 @@ export default function SettingsPage() {
                             changing address (e.g. a LAN IP instead of a fixed domain) is treated as a different site
                             and will ask
                             again; this is a browser security rule, not something the app controls.
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card className="max-w-md">
+                    <CardHeader>
+                        <CardTitle>Barcode scanner engine</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-2 pt-0">
+                        {SCANNER_ENGINE_OPTIONS.map((opt) => (
+                            <label key={opt.id} className="flex items-center gap-2 text-sm">
+                                <input
+                                    type="radio"
+                                    name="scanner-engine"
+                                    checked={scannerEngine === opt.id}
+                                    onChange={() => setScannerEngine(opt.id)}
+                                    className="h-4 w-4"
+                                />
+                                {opt.label}
+                            </label>
+                        ))}
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            No engine fixes distortion from a curved product surface — this changes which decode algorithm
+                            is used, which sometimes reads a barcode another engine misses (and sometimes the reverse). Try
+                            a different one if scans are unreliable on a specific product.
                         </p>
                     </CardContent>
                 </Card>

@@ -7,6 +7,7 @@ import {Button} from '@/components/ui/button';
 import {useCameraBarcodeScanner} from '@/hooks/use-camera-barcode-scanner';
 import {useCartStore} from '@/stores/cart-store';
 import {useFormatCurrency} from '@/hooks/use-currency';
+import {useScannerEnginePreference} from "@/hooks/use-scanner-engine-preference";
 
 export interface ScanFeedback {
     type: 'success' | 'error';
@@ -39,10 +40,13 @@ export function BarcodeScanner({
                                    lastProductId,
                                    showSummary = true,
                                }: Props) {
-    const {videoRef, status, hasTorch, torchOn, toggleTorch} = useCameraBarcodeScanner({
-        enabled: open,
-        onDetect: (code) => onDetect(code),
-    });
+    const { engine } = useScannerEnginePreference();
+    const { videoRef, status, hasTorch, torchOn, toggleTorch, zoomCapability, zoom, setZoom, activeEngineId } =
+        useCameraBarcodeScanner({
+            enabled: open,
+            engineId: engine,
+            onDetect: (code) => onDetect(code),
+        });
 
     const items = useCartStore((s) => s.items);
     const incrementItem = useCartStore((s) => s.incrementItem);
@@ -152,8 +156,31 @@ export function BarcodeScanner({
                     </div>
 
                     <p className="px-4 pt-3 text-center text-xs text-white/60">
-                        Fill the frame with the barcode — hold steady for small or worn codes
+                        Curved packaging (cans, bottles)? Tilt it slightly so the barcode faces the camera as flat as
+                        possible — the flattest section reads best.
                     </p>
+
+                    {zoomCapability && zoom !== null && (
+                        <div className="flex items-center gap-3 px-4 pb-1 pt-2">
+                            <span className="text-xs text-white/60">Zoom</span>
+                            <input
+                                type="range"
+                                min={zoomCapability.min}
+                                max={zoomCapability.max}
+                                step={zoomCapability.step || 0.1}
+                                value={zoom}
+                                onChange={(e) => setZoom(Number(e.target.value))}
+                                className="h-1.5 flex-1 accent-primary"
+                                aria-label="Camera zoom"
+                            />
+                        </div>
+                    )}
+
+                    {activeEngineId && (
+                        <p className="px-4 pb-1 text-center text-[10px] uppercase tracking-wide text-white/40">
+                            Engine: {activeEngineId}
+                        </p>
+                    )}
 
                     {showSummary && (
                         <div className="flex-1 overflow-y-auto px-4 py-3">
