@@ -4,7 +4,134 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62187cfc-a52a-4d58-9509-450e2c2b9bda" name="Changes" comment="" />
+    <list default="true" id="62187cfc-a52a-4d58-9509-450e2c2b9bda" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-camera-barcode-scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-camera-barcode-scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-camera-permission.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-camera-permission.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-currency.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-currency.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-current-employee.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-current-employee.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-debounced-value.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-debounced-value.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-employees.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-employees.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-hardware-barcode-scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-hardware-barcode-scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-held-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-held-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-infinite-list.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-infinite-list.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-low-stock-threshold.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-low-stock-threshold.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-offline-sale-queue.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-offline-sale-queue.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-online-status.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-online-status.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-products.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-products.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/hooks/use-scanner-engine-preference.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/hooks/use-scanner-engine-preference.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-camera-barcode-scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-camera-barcode-scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-camera-permission.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-camera-permission.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-currency.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-currency.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-current-employee.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-current-employee.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-debounced-value.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-debounced-value.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-employees.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-employees.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-hardware-barcode-scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-hardware-barcode-scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-held-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-held-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-infinite-list.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-infinite-list.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-low-stock-threshold.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-low-stock-threshold.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-offline-sale-queue.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-offline-sale-queue.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-online-status.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-online-status.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-products.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-products.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-scanner-engine-preference.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/hooks/use-scanner-engine-preference.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/auth/auth.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/auth/auth.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/auth/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/auth/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/client.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/client.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/employees.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/employees.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/products.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/products.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/firebase/sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/nav.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/nav.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/offline/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/offline/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/offline/sale-queue.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/offline/sale-queue.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/pos/held-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/pos/held-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/pos/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/pos/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/native-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/native-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/zbar-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/zbar-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/zxing-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/engines/zxing-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/registry.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/scanner/registry.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/analytics.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/analytics.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/barcode.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/barcode.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/cash.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/cash.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/clear-local-data.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/clear-local-data.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/cn.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/cn.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/csv.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/csv.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/currency.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/currency.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/dates.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/dates.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/feedback.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/feedback.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/refund.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/refund.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/reports.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/reports.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/search.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/utils/search.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/validation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/validation/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/lib/validation/product-schema.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/lib/validation/product-schema.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/stores/cart-store.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/stores/cart-store.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/stores/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/stores/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/cart.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/cart.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/employee.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/employee.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/held-sale.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/held-sale.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/product.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/product.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/sale.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/sale.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/types/scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/types/scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/auth/auth.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/auth/auth.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/auth/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/auth/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/client.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/client.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/employees.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/employees.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/products.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/products.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/firebase/sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/firebase/sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/nav.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/nav.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/offline/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/offline/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/offline/sale-queue.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/offline/sale-queue.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/pos/held-sales.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/pos/held-sales.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/pos/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/pos/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/engines/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/engines/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/engines/native-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/engines/native-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/engines/zbar-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/engines/zbar-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/engines/zxing-engine.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/engines/zxing-engine.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/scanner/registry.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/scanner/registry.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/analytics.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/analytics.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/barcode.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/barcode.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/cash.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/cash.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/clear-local-data.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/clear-local-data.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/cn.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/cn.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/csv.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/csv.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/currency.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/currency.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/dates.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/dates.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/feedback.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/feedback.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/refund.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/refund.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/reports.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/reports.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/utils/search.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/utils/search.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/validation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/validation/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lib/validation/product-schema.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lib/validation/product-schema.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/stores/cart-store.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/stores/cart-store.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/stores/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/stores/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/cart.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/cart.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/employee.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/employee.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/held-sale.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/held-sale.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/product.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/product.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/sale.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/sale.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/types/scanner.ts.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/types/scanner.ts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vitest.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vitest.config.mts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,61 +197,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="5.235313152736085E-4" />
-      <entry key="MS500" value="0.7792623085166981" />
-      <entry key="S2" value="4.3702750846762735" />
-      <entry key="S5" value="7.47827448853366" />
-      <entry key="S10" value="11.359823477919814" />
-      <entry key="S30" value="18.550907398165695" />
-      <entry key="S60" value="23.353074348013656" />
-      <entry key="M2" value="27.877794418400995" />
-      <entry key="M5" value="32.841091901808646" />
-      <entry key="M10" value="37.93691780114158" />
-      <entry key="M15" value="46.0757830010485" />
-      <entry key="M30" value="91.76133990583111" />
-      <entry key="H1" value="209.45982091070738" />
-      <entry key="H2" value="391.62788463170807" />
-      <entry key="H4" value="576.1528555092968" />
-      <entry key="D1" value="831.0632426443597" />
-      <entry key="W1" value="888.864678394904" />
+      <entry key="MS100" value="1.0869684415343046" />
+      <entry key="MS500" value="2.7087749638440064" />
+      <entry key="S2" value="4.219387856639253" />
+      <entry key="S5" value="4.675801358840436" />
+      <entry key="S10" value="5.111726597059136" />
+      <entry key="S30" value="8.283922412349686" />
+      <entry key="S60" value="11.386495888639201" />
+      <entry key="M2" value="15.029028787015205" />
+      <entry key="M5" value="22.838121502825693" />
+      <entry key="M10" value="29.39147753192372" />
+      <entry key="M15" value="32.56205585213026" />
+      <entry key="M30" value="38.64602557950973" />
+      <entry key="H1" value="71.69760650868324" />
+      <entry key="H2" value="195.52187671287123" />
+      <entry key="H4" value="403.73493128002343" />
+      <entry key="D1" value="810.5002613503052" />
+      <entry key="W1" value="920.1473353568529" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0240136747076252" />
-      <entry key="MS500" value="1.474342157570227" />
-      <entry key="S2" value="1.8298945855900173" />
-      <entry key="S5" value="1.928134907378683" />
-      <entry key="S10" value="1.9654286850377902" />
-      <entry key="S30" value="2.1143328792576694" />
-      <entry key="S60" value="2.349734356842907" />
-      <entry key="M2" value="2.5934961916261985" />
-      <entry key="M5" value="2.813778126829914" />
-      <entry key="M10" value="2.9920577084649844" />
-      <entry key="M15" value="3.356896015822358" />
-      <entry key="M30" value="5.445383223905942" />
-      <entry key="H1" value="10.10694226523964" />
-      <entry key="H2" value="16.45127888933829" />
-      <entry key="H4" value="22.534008473917464" />
-      <entry key="D1" value="30.800028496913484" />
-      <entry key="W1" value="32.67168097944558" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="1.0448061865265113E-288" />
+      <entry key="S30" value="1.7127718313591784E-96" />
+      <entry key="S60" value="2.114861061995839E-48" />
+      <entry key="M2" value="2.460464774006454E-24" />
+      <entry key="M5" value="6.920579534560722E-10" />
+      <entry key="M10" value="4.692413472429573E-5" />
+      <entry key="M15" value="0.002103239649037482" />
+      <entry key="M30" value="0.1363025198690475" />
+      <entry key="H1" value="1.5990332804667373" />
+      <entry key="H2" value="6.54362681959344" />
+      <entry key="H4" value="14.211760589317134" />
+      <entry key="D1" value="28.522397180586303" />
+      <entry key="W1" value="32.315065283639086" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.13634415671795355" />
-      <entry key="MS500" value="1.7154033109831082" />
-      <entry key="S2" value="5.97811240769211" />
-      <entry key="S5" value="9.302635082867162" />
-      <entry key="S10" value="13.267545195620857" />
-      <entry key="S30" value="20.640428890937518" />
-      <entry key="S60" value="25.686995695113904" />
-      <entry key="M2" value="30.461250510990954" />
-      <entry key="M5" value="35.64954146150409" />
-      <entry key="M10" value="40.925753328567595" />
-      <entry key="M15" value="49.430156698427425" />
-      <entry key="M30" value="97.20458103194406" />
-      <entry key="H1" value="219.56440891755955" />
-      <entry key="H2" value="408.07673568080304" />
-      <entry key="H4" value="598.6849008061627" />
-      <entry key="D1" value="861.8627495541964" />
-      <entry key="W1" value="921.5362781750966" />
+      <entry key="MS100" value="1.0638954981582724" />
+      <entry key="MS500" value="2.6933650815718213" />
+      <entry key="S2" value="4.212841818728147" />
+      <entry key="S5" value="4.672834268948284" />
+      <entry key="S10" value="5.109442133184901" />
+      <entry key="S30" value="8.278978013379719" />
+      <entry key="S60" value="11.38148977761458" />
+      <entry key="M2" value="15.024967147756456" />
+      <entry key="M5" value="22.83543438810123" />
+      <entry key="M10" value="29.389784061594703" />
+      <entry key="M15" value="32.56287346223256" />
+      <entry key="M30" value="38.78155785351587" />
+      <entry key="H1" value="73.29588748892724" />
+      <entry key="H2" value="202.06434213765596" />
+      <entry key="H4" value="417.94535437943074" />
+      <entry key="D1" value="839.0221587426169" />
+      <entry key="W1" value="952.4623179262458" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -231,7 +358,7 @@
       <workItem from="1786523026875" duration="40000" />
       <workItem from="1786525373976" duration="3000" />
       <workItem from="1788727407095" duration="949000" />
-      <workItem from="1788770191295" duration="8336000" />
+      <workItem from="1788770191295" duration="9053000" />
     </task>
     <servers />
   </component>

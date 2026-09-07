@@ -2,6 +2,9 @@
   "name": "store-management-next",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -51,7 +54,7 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^20.14.15",
+    "@types/node": "^22",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
