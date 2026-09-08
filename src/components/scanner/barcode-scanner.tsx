@@ -45,7 +45,7 @@ export function BarcodeScanner({
         useCameraBarcodeScanner({
             enabled: open,
             engineId: engine,
-            onDetect: (code) => onDetect(code),
+            onDetect,
         });
 
     const items = useCartStore((s) => s.items);
@@ -69,6 +69,7 @@ export function BarcodeScanner({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
+                hideCloseButton
                 className="h-dvh max-h-dvh w-screen max-w-none rounded-none border-0 p-0 sm:h-[min(90dvh,720px)] sm:max-w-md sm:rounded-lg">
                 <DialogTitle className="sr-only">Scan barcode</DialogTitle>
                 <div className="relative flex h-full flex-col overflow-hidden bg-black text-white sm:rounded-lg">
@@ -83,7 +84,7 @@ export function BarcodeScanner({
                             variant="ghost"
                             size="icon"
                             className="text-white hover:bg-white/10 disabled:opacity-30"
-                            disabled={!hasTorch}
+                            disabled={!hasTorch || status !== 'scanning'}
                             onClick={toggleTorch}
                             aria-label="Toggle flashlight"
                         >

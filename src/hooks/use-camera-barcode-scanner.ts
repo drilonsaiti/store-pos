@@ -56,6 +56,11 @@ export function useCameraBarcodeScanner({
         time: 0,
     });
 
+    const onDetectRef = useRef(onDetect);
+    useEffect(() => {
+        onDetectRef.current = onDetect;
+    }, [onDetect]);
+
     const acceptDetection = useCallback(
         (raw: string) => {
             const code = normalizeBarcode(raw);
@@ -67,9 +72,9 @@ export function useCameraBarcodeScanner({
             }
 
             lastDetectionRef.current = {code, time: now};
-            onDetect(code);
+            onDetectRef.current(code);
         },
-        [onDetect, debounceMs],
+        [debounceMs],
     );
 
     const cleanupScanner = useCallback(() => {
