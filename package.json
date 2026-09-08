@@ -32,7 +32,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/query-sync-storage-persister": "^5.101.4",
     "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-query-persist-client": "^5.101.4",
+    "@tanstack/react-query-persist-client": "^5.102.8",
     "@undecaf/zbar-wasm": "^0.11.0",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
