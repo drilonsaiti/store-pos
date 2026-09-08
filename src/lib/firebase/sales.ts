@@ -6,6 +6,13 @@ import type {StockDelta} from '@/lib/utils/stock';
 
 const PATH = 'sale';
 
+export class SaleNotFoundError extends Error {
+    constructor(saleId: string) {
+        super(`Sale "${saleId}" was not found.`);
+        this.name = 'SaleNotFoundError';
+    }
+}
+
 export async function getSales(): Promise<Sale[]> {
     try {
         const snapshot = await get(ref(getDb(), PATH));
@@ -108,7 +115,19 @@ export async function refundSale(
         const id = newRefundRef.key as string;
 
         const result = await runTransaction(saleRef, (current: RawSale | null) => {
-            if (current === null) return undefined; // sale doesn't exist — abort, nothing to write
+            if (current === null) {
+                // Firebase transactions must tolerate being invoked with
+                // null even when real data exists server-side — the first
+                // call may just be an uncached local guess. Proposing "no
+                // change" here is always safe: if real data exists, the
+                // server rejects this proposal and the SDK automatically
+                // retries us with the real value (see the loop below,
+                // which then runs against real data); if the sale truly
+                // doesn't exist, this is a harmless null-over-null no-op,
+                // detected afterwards via result.snapshot.exists() rather
+                // than guessed here.
+                return current;
+            }
 
             for (const line of refund.lines) {
                 const soldLine = current.products.find(
@@ -135,6 +154,10 @@ export async function refundSale(
             throw new RefundExceedsAvailableError();
         }
 
+        if (!result.snapshot.exists()) {
+            throw new SaleNotFoundError(saleId);
+        }
+
         if (stockDeltas.length > 0) {
             const updates: Record<string, unknown> = {};
             for (const {productId, delta} of stockDeltas) {
@@ -148,7 +171,7 @@ export async function refundSale(
 
         return {id, ...refund};
     } catch (error) {
-        if (error instanceof RefundExceedsAvailableError) {
+        if (error instanceof RefundExceedsAvailableError || error instanceof SaleNotFoundError) {
             throw error;
         }
         throw new FirebaseUnavailableError(error);

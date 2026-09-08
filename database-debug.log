@@ -1,0 +1,61 @@
+18:44:45.537 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+18:44:45.693 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+18:44:46.092 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - undefined-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 153ms, init: 0ms
+18:44:46.263 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace undefined-default-rtdb status Active to Active
+18:44:47.591 [FirebaseWorkerPool-1-3] WARN com.firebase.core.persistence.backend.dummy.EmulatorMetadataPersistence - Multiple projectIds are not recommended in single project mode. Requested 
+namespace store-pos-emulator-test, but the emulator is configured for undefined-default-rtdb. To 
+opt-out of single project mode add/set the singleProjectMode: false property in 
+the firebase.json emulators config. 
+18:44:47.595 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO com.firebase.core.namespace.NamespaceActor - store-pos-emulator-test successfully activated FBKV (SurveyIdle(0)) wait: 2ms, init: 0ms
+18:44:47.615 [NamespaceSystem-blocking-namespace-operation-dispatcher-6] INFO com.firebase.core.namespace.StateManager - Namespace store-pos-emulator-test status Active to Active
+18:44:48.022 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:48.291 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:48.433 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:48.576 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:48.718 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:48.909 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:49.018 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:49.161 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:49.270 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:49.397 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:49.840 [NamespaceSystem-blocking-namespace-operation-dispatcher-9] INFO com.firebase.core.namespace.StateManager - Namespace store-pos-emulator-test status Active to Active
+18:44:49.970 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.096 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.223 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.350 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.476 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.635 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.761 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:50.889 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.049 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.190 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.345 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.472 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.612 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.753 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.895 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:51.985 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:52.116 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:52.535 [NamespaceSystem-blocking-namespace-operation-dispatcher-9] INFO com.firebase.core.namespace.StateManager - Namespace store-pos-emulator-test status Active to Active
+18:44:52.795 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...fX0., assuming ownership.
+18:44:52.906 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.031 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.141 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.265 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.376 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.499 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.625 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.736 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.844 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:53.999 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.157 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.267 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.441 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.599 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.770 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:54.912 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:55.070 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:55.229 [FirebaseWorkerPool-1-1] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:55.334 [FirebaseWorkerPool-1-4] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:55.466 [FirebaseWorkerPool-1-3] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
+18:44:55.576 [FirebaseWorkerPool-1-2] WARN com.firebase.server.forge.App$ - Received service account token eyJh...X19., assuming ownership.
