@@ -304,6 +304,12 @@ export function useCameraBarcodeScanner({
             } catch (error) {
                 if (cancelled) return;
 
+                // A later step (engine.init(), etc.) can throw after the
+                // camera stream was already successfully acquired —
+                // release it here so a failed engine doesn't leave the
+                // camera silently running behind the error overlay.
+                cleanupScanner();
+
                 const name = (error as DOMException)?.name;
 
                 setStatus(
