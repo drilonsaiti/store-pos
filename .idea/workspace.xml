@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="62187cfc-a52a-4d58-9509-450e2c2b9bda" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database-debug.log" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="334" />
+    <option name="cachedIndexableFilesCount" value="335" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -72,61 +73,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.1047972861779183" />
-      <entry key="MS500" value="3.347561759706548" />
-      <entry key="S2" value="5.703851765985367" />
-      <entry key="S5" value="6.439403073865248" />
-      <entry key="S10" value="6.712174815200184" />
-      <entry key="S30" value="7.579155641511602" />
-      <entry key="S60" value="14.746222572437576" />
-      <entry key="M2" value="34.06813215108511" />
-      <entry key="M5" value="65.84401642802045" />
-      <entry key="M10" value="85.46418509867806" />
-      <entry key="M15" value="94.43207745367226" />
-      <entry key="M30" value="105.72656966169158" />
-      <entry key="H1" value="113.69450380756439" />
-      <entry key="H2" value="131.716192488076" />
-      <entry key="H4" value="214.71288776839347" />
-      <entry key="D1" value="863.4195949275357" />
-      <entry key="W1" value="1220.5371212505286" />
+      <entry key="MS100" value="1.1455923997339863" />
+      <entry key="MS500" value="1.8667426142159225" />
+      <entry key="S2" value="4.929708361816031" />
+      <entry key="S5" value="7.425919565652097" />
+      <entry key="S10" value="9.543193774102482" />
+      <entry key="S30" value="16.057829771491576" />
+      <entry key="S60" value="20.305392110806082" />
+      <entry key="M2" value="23.269996745488534" />
+      <entry key="M5" value="25.40406247376313" />
+      <entry key="M10" value="26.184078571014542" />
+      <entry key="M15" value="26.481767043768265" />
+      <entry key="M30" value="28.61520633410556" />
+      <entry key="H1" value="42.06874598537234" />
+      <entry key="H2" value="75.10284327917927" />
+      <entry key="H4" value="156.81384795213475" />
+      <entry key="D1" value="820.9904299326571" />
+      <entry key="W1" value="1233.0080308895547" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="3.457974272205548E-111" />
-      <entry key="S2" value="4.0111624140699334E-28" />
-      <entry key="S5" value="1.6646704196018653E-11" />
-      <entry key="S10" value="5.768856720138505E-6" />
-      <entry key="S30" value="0.028986755495083297" />
-      <entry key="S60" value="0.2614215381455933" />
-      <entry key="M2" value="0.8491934987809642" />
-      <entry key="M5" value="1.9832103879931677" />
-      <entry key="M10" value="2.9409975855438204" />
-      <entry key="M15" value="3.446247901909347" />
-      <entry key="M30" value="4.110239219602873" />
-      <entry key="H1" value="4.540038733415236" />
-      <entry key="H2" value="5.1412318050912225" />
-      <entry key="H4" value="8.008235941778835" />
-      <entry key="D1" value="31.43123425978148" />
-      <entry key="W1" value="44.28851849060969" />
+      <entry key="MS100" value="0.0012906576232820125" />
+      <entry key="MS500" value="0.3929209269824405" />
+      <entry key="S2" value="1.3165942037829854" />
+      <entry key="S5" value="1.6904304740411318" />
+      <entry key="S10" value="1.8384280362359935" />
+      <entry key="S30" value="1.9445568493456296" />
+      <entry key="S60" value="1.972075136658206" />
+      <entry key="M2" value="1.9859863586407793" />
+      <entry key="M5" value="1.9943822032211158" />
+      <entry key="M10" value="1.9972058827902475" />
+      <entry key="M15" value="1.9992286675324529" />
+      <entry key="M30" value="2.0725987287395764" />
+      <entry key="H1" value="2.6067938030949422" />
+      <entry key="H2" value="3.880059195282812" />
+      <entry key="H4" value="6.842900994021254" />
+      <entry key="D1" value="30.90398226872036" />
+      <entry key="W1" value="45.761341909214174" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.24540559758249475" />
-      <entry key="MS500" value="3.012273421218861" />
-      <entry key="S2" value="5.604572375895109" />
-      <entry key="S5" value="6.398187439053653" />
-      <entry key="S10" value="6.691309393664286" />
-      <entry key="S30" value="7.600747555822462" />
-      <entry key="S60" value="15.001228232956048" />
-      <entry key="M2" value="34.908462401987336" />
-      <entry key="M5" value="67.81818084704139" />
-      <entry key="M10" value="88.39810075863672" />
-      <entry key="M15" value="97.87248215154683" />
-      <entry key="M30" value="109.83293526005042" />
-      <entry key="H1" value="118.2322191546421" />
-      <entry key="H2" value="136.85606174786076" />
-      <entry key="H4" value="222.7201595302833" />
-      <entry key="D1" value="894.8502824229687" />
-      <entry key="W1" value="1264.8255296036307" />
+      <entry key="MS100" value="0.31353003997103274" />
+      <entry key="MS500" value="1.4979030277278451" />
+      <entry key="S2" value="5.847304408566967" />
+      <entry key="S5" value="8.922453812888119" />
+      <entry key="S10" value="11.276804797713774" />
+      <entry key="S30" value="17.963907966490332" />
+      <entry key="S60" value="22.257340218199836" />
+      <entry key="M2" value="25.24562636354808" />
+      <entry key="M5" value="27.394219550532235" />
+      <entry key="M10" value="28.179156954681034" />
+      <entry key="M15" value="28.479572133411693" />
+      <entry key="M30" value="30.687023181738127" />
+      <entry key="H1" value="44.67487229423657" />
+      <entry key="H2" value="78.98222568135414" />
+      <entry key="H4" value="163.6560765905011" />
+      <entry key="D1" value="851.8938945186451" />
+      <entry key="W1" value="1278.7692618462904" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -141,34 +142,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Vitest.createSale — atomic stock decrement (the original P0 bug).executor": "Run",
-    "Vitest.getQuickCashAmounts.does not suggest a round amount equal to an already-round total.executor": "Run",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "javascript.preferred.runtime.type.id": "node",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/Ardit/Downloads/store-next",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.jshint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.jshint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Users\\Ardit\\Downloads\\store-next\\node_modules\\typescript\\lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Vitest.createSale — atomic stock decrement (the original P0 bug).executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.getQuickCashAmounts.does not suggest a round amount equal to an already-round total.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ardit/Downloads/store-next&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Ardit\\Downloads\\store-next\\node_modules\\typescript\\lib&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Ardit\Downloads\store-next" />
@@ -252,7 +253,9 @@
       <workItem from="1788812621010" duration="780000" />
       <workItem from="1788859760158" duration="1379000" />
       <workItem from="1788861608243" duration="670000" />
-      <workItem from="1788862718763" duration="4677000" />
+      <workItem from="1788862718763" duration="6627000" />
+      <workItem from="1788965166546" duration="342000" />
+      <workItem from="1789320927056" duration="969000" />
     </task>
     <servers />
   </component>

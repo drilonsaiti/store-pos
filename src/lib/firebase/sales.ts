@@ -56,6 +56,14 @@ export async function createSale(sale: SaleInput, stockDeltas: StockDelta[] = []
         if (error instanceof Error && /undefined in property/.test(error.message)) {
             throw error;
         }
+        // Any error carrying a recognizable Firebase error code (e.g.
+        // PERMISSION_DENIED) is a real server-side rejection, not a
+        // connectivity problem — rethrow it as-is so callers can inspect
+        // .code and the real message, instead of masking it behind the
+        // generic "unreachable" wrapper below, which has no .code at all.
+        if ((error as { code?: string })?.code) {
+            throw error;
+        }
         throw new FirebaseUnavailableError(error);
     }
 }
@@ -172,6 +180,9 @@ export async function refundSale(
         return {id, ...refund};
     } catch (error) {
         if (error instanceof RefundExceedsAvailableError || error instanceof SaleNotFoundError) {
+            throw error;
+        }
+        if ((error as { code?: string })?.code) {
             throw error;
         }
         throw new FirebaseUnavailableError(error);

@@ -73,7 +73,7 @@ export default function ProductsPage() {
                             <ScanLine className="h-4 w-4"/>
                         </Button>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         <Button variant="outline" size="lg" className="sm:size-default" asChild>
                             <Link href="/products/restock">
                                 <PackagePlus className="h-4 w-4" />
@@ -104,7 +104,8 @@ export default function ProductsPage() {
                         <Button asChild size="lg" className="sm:size-default">
                             <Link href="/products/new">
                                 <Plus className="h-4 w-4"/>
-                                Add product
+                                <span className="hidden sm:inline">Add product</span>
+                                <span className="sm:hidden">Add</span>
                             </Link>
                         </Button>
                     </div>
