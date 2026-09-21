@@ -35,7 +35,7 @@
     "@tanstack/react-query-persist-client": "^5.101.4",
     "@undecaf/zbar-wasm": "^0.11.0",
     "@zxing/browser": "^0.1.5",
-    "@zxing/library": "^0.21.3",
+    "@zxing/library": "^0.23.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "firebase": "^12.18.0",
